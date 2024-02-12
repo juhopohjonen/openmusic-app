@@ -9,7 +9,7 @@ import LoopIcon from '@mui/icons-material/Loop';
 import example from './example.png'
 
 
-const SongCard = ({ title, artist, src }: { title: string, artist: string, src: string }) => {
+const SongCard = ({ title, artist, src, isControllable=true }: { title: string, artist: string, src: string, isControllable?: boolean }) => {
 
     const [isPlaying, setPlaying] = useState(false)
     const [isLoop, setLoop] = useState(false)
@@ -71,7 +71,7 @@ const SongCard = ({ title, artist, src }: { title: string, artist: string, src: 
                 
 
                 <CardContent sx={{ flex: '1 0 auto' }}>
-                <Typography variant='h5' component='div'>
+                <Typography variant='h5' component='div' sx={{ textDecoration: 'none' }}>
                     {title}
                 </Typography>
                 <Typography variant="subtitle1" color="text.secondary" component='div'>
@@ -80,26 +80,30 @@ const SongCard = ({ title, artist, src }: { title: string, artist: string, src: 
                 
                 </CardContent>
 
+                {
+                    isControllable && (
+                        <>
+                            <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>
+                            <IconButton onClick={toAudioStart} aria-label="previous">
+                                <SkipPreviousIcon />
+                            </IconButton>
+                            <IconButton onClick={changePlayStatus} aria-label="play/pause">
+                                {
+                                    isPlaying ? <PauseIcon sx={{ height: 38, width: 38 }} /> : <PlayArrowIcon sx={{ height: 38, width: 38 }} />
+                                }
+                                
+                            </IconButton>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>
-                <IconButton onClick={toAudioStart} aria-label="previous">
-                    <SkipPreviousIcon />
-                </IconButton>
-                <IconButton onClick={changePlayStatus} aria-label="play/pause">
-                    {
-                        isPlaying ? <PauseIcon sx={{ height: 38, width: 38 }} /> : <PlayArrowIcon sx={{ height: 38, width: 38 }} />
-                    }
-                    
-                </IconButton>
+                            <IconButton aria-label="loop" onClick={changeLoop}>
+                                <LoopIcon color={isLoop ? 'primary' : 'inherit'} />
+                            </IconButton>
 
-                <IconButton aria-label="loop" onClick={changeLoop}>
-                    <LoopIcon color={isLoop ? 'primary' : 'inherit'} />
-                </IconButton>
+                            </Box>
 
+                        </>
+                    )
+                }
 
-
-
-                </Box>
 
 
             </Box>

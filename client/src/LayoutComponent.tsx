@@ -5,6 +5,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import React, { useState } from "react";
 
 import UploadIcon from '@mui/icons-material/Upload';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 // the 
 
@@ -27,7 +28,7 @@ const Layout = () => {
     )
 }
 
-const MenuItems = () => {
+const MenuItems = ({ menuType }: { menuType: 'main' | 'user' }) => {
     interface MenuItemValues {
         title: string,
         url: string,
@@ -45,9 +46,30 @@ const MenuItems = () => {
         },
     ]
 
+    const userMenuItems: MenuItemValues[] = [
+        {
+            title: 'Login',
+            url: '/login'
+        },
+        {
+            title: 'Signup',
+            url: '/signup'
+        }
+    ]
+
+    let items: MenuItemValues[] = []
+    switch (menuType) {
+        case 'main':
+            items = menuItems
+            break
+        case 'user':
+            items = userMenuItems
+            break
+    }
+
     return (
         <>
-            {menuItems.map(item => (
+            {items.map(item => (
                 <MenuItem component={Link} key={item.title} to={item.url}>{item.title}</MenuItem>
             ))}
         </>
@@ -56,10 +78,19 @@ const MenuItems = () => {
 
 const Navbar = () => {
     const [anchor, setAnchor] = useState<null | HTMLElement>(null)
+    const [userAnchor, setUserAnchor] = useState<null | HTMLElement>(null)
     
-    const closeMenu = () => setAnchor(null)
+    const closeMenu = () => {
+        setAnchor(null)
+        setUserAnchor(null)
+    }
+
     const openMenu = (e: React.MouseEvent<HTMLElement>) => {
         setAnchor(e.currentTarget)
+    }
+
+    const openUserMenu = (e: React.MouseEvent<HTMLElement>) => {
+        setUserAnchor(e.currentTarget)
     }
 
     return (
@@ -89,7 +120,7 @@ const Navbar = () => {
                     open={Boolean(anchor)}
                     onClose={closeMenu}
                 >
-                    <MenuItems />
+                    <MenuItems menuType="main" />
                 </Menu>
 
                 <Typography component={Link} color='text.primary' to='/' variant="h6" sx={{ flexGrow: 1, textDecoration: 'none' }}>OpenMusic</Typography>
@@ -97,6 +128,27 @@ const Navbar = () => {
                 <IconButton component={Link} to='/upload'>
                     <UploadIcon />
                 </IconButton>
+
+                <IconButton onClick={openUserMenu} sx={{ ml: 1 }}>
+                    <AccountCircleIcon />
+                </IconButton>
+                <Menu
+                    anchorEl={userAnchor}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right'
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right'
+                    }}
+                    open={Boolean(userAnchor)}
+                    onClose={closeMenu}
+                >
+                    <MenuItems menuType="user" />
+                </Menu>
+
             </Toolbar>
         </AppBar>
     )

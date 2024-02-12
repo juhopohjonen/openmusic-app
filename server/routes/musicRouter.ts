@@ -3,10 +3,6 @@ import { requireAuth } from "../middlewares";
 
 import { upload } from "../utils/uploadHandler";
 import SongModel from "../models/Song";
-
-import path from 'path'
-import fs from 'fs'
-import getValues from "../env";
 import { User } from "../types";
 
 
@@ -14,7 +10,7 @@ import { User } from "../types";
 const musicRouter = Router()
 
 musicRouter.get('/', async (_req, res) => {
-    const songs = await SongModel.find({})
+    const songs = await SongModel.find({}).populate<{ artist: User }>('artist')
     return res.send(songs)
 })
 
