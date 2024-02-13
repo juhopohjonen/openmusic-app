@@ -23,3 +23,9 @@ export interface Song {
     filename: string,
     _id: ObjectId
 }
+
+export interface Comment {
+    content: string,
+    user: User,
+    song: ObjectId
+}
