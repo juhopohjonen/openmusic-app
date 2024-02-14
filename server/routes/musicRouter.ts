@@ -78,7 +78,7 @@ musicRouter.post('/:id/comment', requireAuth, async (req, res) => {
 
     await comment.save()
 
-    let populatedComment = await comment.populate<{ user: User, song: Song }>('user song')
+    const populatedComment = await comment.populate<{ user: User, song: Song }>('user song')
     return res.send(populatedComment)
 
 })

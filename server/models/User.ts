@@ -3,11 +3,14 @@ import { User } from "../types";
 
 const userSchema = new mongoose.Schema<User>({
     username: {
-        type: String
+        type: String,
+        required: true,
+        unique: true
     },
 
     pwdHash: {
-        type: String
+        type: String,
+        required: true
     }
 })
 
