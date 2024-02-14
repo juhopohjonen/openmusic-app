@@ -38,7 +38,18 @@ const logoutUser = (setAuth: React.Dispatch<React.SetStateAction<AuthState>>) =>
     setAuth(null)
 }
 
+
+const setStateWithTimeout = (setFunc: React.Dispatch<React.SetStateAction<string>>, msg: string) => {
+    console.log('setting..')
+    setFunc(msg)
+
+    setTimeout(() => {
+        setFunc('')
+    }, 3000)
+} 
+
 export {
     getAuth,
-    logoutUser
+    logoutUser,
+    setStateWithTimeout
 }

@@ -1,13 +1,10 @@
-import { CircularProgress, Grid, Typography } from "@mui/material";
+import { CircularProgress, Grid } from "@mui/material";
 import { Song } from "../types";
 import { Link } from "react-router-dom";
 import SongCard from "./SongCard";
 import { API_BASE } from "../constants";
 
-const linkStyle = {
-    color: 'white',
-    textDecoration: 'none'
-}
+
 
 const SongList = ({ songs }: { songs: Song[] | null }) => {
     if (!songs) {

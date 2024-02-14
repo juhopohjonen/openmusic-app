@@ -7,10 +7,12 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import axios from "axios";
 import { API_BASE } from "../constants.ts";
 import { AuthProps } from "../types.ts";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 
-const Upload = ({ auth }: AuthProps) => {
+const Upload = ({ auth, setSuccess, setDanger }: AuthProps) => {
+
+    const navigate = useNavigate()
 
     if (!auth) {
         return (
@@ -34,6 +36,17 @@ const Upload = ({ auth }: AuthProps) => {
                 "Content-Type": 'multipart/form-data'
             }
         })
+
+            .then(res => {
+                const { id } = res.data.song
+                setSuccess('Song published successfully.')
+                return navigate(`/listen/${id}`)
+            })
+
+            .catch(err => {
+                console.error(err)
+                return setDanger('Something happened in publishing song.')
+            })
     }
 
     return (
@@ -51,6 +64,7 @@ const Upload = ({ auth }: AuthProps) => {
 const UploadMusicForm = ({ sendReqFunc }: { sendReqFunc: Function }) => {
     const [songName, setSongName] = useState('')
     const [songInput, setSongInput] = useState<File | null>(null)
+    const [coverImg, setCoverImg] = useState<File | null>(null)
 
     // see https://mui.com/material-ui/react-button/#file-upload
 
@@ -72,8 +86,14 @@ const UploadMusicForm = ({ sendReqFunc }: { sendReqFunc: Function }) => {
         }
     }
 
+    const songCoverChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setCoverImg(e.target.files[0])
+        }
+    }
+
     const isFormValid = (): boolean => {
-        if (!songInput || !songName) {
+        if (!songInput || !songName || !coverImg) {
             return false
         }
 
@@ -102,15 +122,26 @@ const UploadMusicForm = ({ sendReqFunc }: { sendReqFunc: Function }) => {
 
             <Typography gutterBottom paragraph>Your artist name will be shown as <i>{getAuth()?.username}</i>.</Typography>
 
-            <Button component="label" color="success" variant="outlined" startIcon={<CloudUploadIcon />}>
+            <Button component="label" color="success" variant="text" startIcon={<CloudUploadIcon />}>
                 Upload song
-                <VisuallyHiddenInput onChange={fileChange} type="file" />
+                <VisuallyHiddenInput onChange={fileChange} type="file" accept=".mp3" />
+            </Button>
+
+
+            {
+                songInput ? <InfoText text={`Song "${songInput.name}" is selected.`} />: <InfoText text="Please upload an mp3 file." />
+            }
+
+            
+            <Button sx={{ mt: 2 }} component="label" color="secondary" variant="text" startIcon={<CloudUploadIcon />}>
+                Set cover icon
+                <VisuallyHiddenInput onChange={songCoverChange} type="file" accept=".png,.jpg" />
             </Button>
 
             {
-                songInput ? <p>file "{songInput.name}" is loaded</p> : <p>please upload file</p>
-            }
-
+                coverImg ? <InfoText text={`Image "${coverImg.name}" is selected.`} /> : <InfoText text="Please upload a .png or a .jpg file." /> 
+            }            
+ 
             <Button
                 disabled={!isFormValid()}
                 variant="outlined"
@@ -122,6 +153,10 @@ const UploadMusicForm = ({ sendReqFunc }: { sendReqFunc: Function }) => {
             </Button>
         </form>
     )
+}
+
+const InfoText = ({ text }: { text: string }) => {
+    return <Typography variant="body1" color="text.secondary" gutterBottom sx={{ mt: 1 }}>{text}</Typography>
 }
 
 export default Upload

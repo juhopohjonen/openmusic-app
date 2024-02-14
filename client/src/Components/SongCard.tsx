@@ -7,6 +7,7 @@ import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import LoopIcon from '@mui/icons-material/Loop';
 
 import example from './example.png'
+import { Link } from "react-router-dom";
 
 
 const SongCard = ({ title, artist, src, isControllable=true }: { title: string, artist: string, src: string, isControllable?: boolean }) => {
@@ -58,7 +59,7 @@ const SongCard = ({ title, artist, src, isControllable=true }: { title: string, 
     }
 
     return (
-        <Card sx={{ display: 'flex', width: '300px', height: '150px' }}>
+        <Card sx={{ display: 'flex', width: '300px', minHeight: '150px' }}>
 
             <CardMedia
                 component="img"
@@ -74,7 +75,7 @@ const SongCard = ({ title, artist, src, isControllable=true }: { title: string, 
                 <Typography variant='h5' component='div' sx={{ textDecoration: 'none' }}>
                     {title}
                 </Typography>
-                <Typography variant="subtitle1" color="text.secondary" component='div'>
+                <Typography component={Link} to={`/user/${artist}`} variant="subtitle1" color="text.secondary">
                     {artist}
                 </Typography>
                 
