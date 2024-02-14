@@ -3,7 +3,7 @@ import { API_BASE } from '../constants'
 import SongCard from '../Components/SongCard'
 import { FormEvent, useEffect, useState } from 'react'
 import axios from 'axios'
-import { CommentType, Song } from '../types'
+import { AuthProps, CommentType, Song } from '../types'
 import SongCardSkeleton from '../Components/SongCardSkeleton'
 import { Grid, IconButton, Paper, TextField, Typography } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send';
@@ -11,13 +11,17 @@ import CommentElem from '../Components/Comment'
 import { getAuth } from '../utils'
 
 
-const ListenTo = () => {
+const ListenTo = ({ setDanger }: AuthProps) => {
     const { id } = useParams()
     const [song, setSong] = useState<Song | null>(null)
 
     useEffect(() => {
         axios.get<Song>(`${API_BASE}/api/music/${id}`)
             .then(res => setSong(res.data))
+            .catch(err => {
+                console.error(err)
+                setDanger('This song could not be found. It might be removed or not exist.')
+            })
     }, [])
 
 
@@ -104,7 +108,7 @@ const CommentList = ({ songId }: { songId: string | undefined }) => {
                 </Grid>
 
                 <Grid item>
-                    <IconButton type='submit' sx={{ mt: 1, ml: 1 }}>
+                    <IconButton disabled={!newComInput} type='submit' sx={{ mt: 1, ml: 1 }}>
                         <SendIcon />
                     </IconButton>
                 </Grid>

@@ -75,9 +75,16 @@ const SongCard = ({ title, artist, src, isControllable=true }: { title: string, 
                 <Typography variant='h5' component='div' sx={{ textDecoration: 'none' }}>
                     {title}
                 </Typography>
-                <Typography component={Link} to={`/user/${artist}`} variant="subtitle1" color="text.secondary">
-                    {artist}
-                </Typography>
+
+                {
+                    isControllable ? (
+                        <Typography component={Link} to={`/user/${artist}`} variant="subtitle1" color="text.secondary">
+                            {artist}
+                        </Typography>
+                    ) : <UncontrollableUserInfo username={artist} />
+                }
+
+
                 
                 </CardContent>
 
@@ -114,4 +121,8 @@ const SongCard = ({ title, artist, src, isControllable=true }: { title: string, 
     )
 }
 
+const UncontrollableUserInfo = ({ username }: { username: string }) => {
+    return <Typography variant="subtitle1" color="text.secondary">by {username}</Typography>
+}
+ 
 export default SongCard

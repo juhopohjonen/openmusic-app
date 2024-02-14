@@ -55,7 +55,16 @@ export default function ResponsiveDrawer({ auth }: AuthProps) {
 
   const drawer = (
     <div>
-      <Toolbar />
+      <List>
+        <ListItem disablePadding>
+          <ListItemButton component={Link} to='/'>
+            <ListItemIcon>
+              <HomeIcon />
+            </ListItemIcon>
+            <ListItemText primary="Return to home" />
+          </ListItemButton>
+        </ListItem>
+      </List>
       <Divider />
       <List>
         <ListItem disablePadding>

@@ -85,7 +85,9 @@ musicRouter.post('/:id/comment', requireAuth, async (req, res) => {
 
 musicRouter.get('/:id/comment', async (req, res) => {
     const { id } = req.params
+    
     const comments = await CommentModel.find({ song: id }).populate<{ user: User, song: Song }>('user song')
+
 
 
     return res.send(comments)

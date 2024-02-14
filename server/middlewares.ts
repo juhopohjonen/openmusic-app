@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { ErrorRequestHandler, NextFunction, Request, Response } from "express";
 import jwt from 'jsonwebtoken'
 import getValues from "./env";
 import UserModel from "./models/User";
@@ -38,7 +38,6 @@ const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
 
     next()
 }
-
 
 export {
     requireAuth

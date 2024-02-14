@@ -12,6 +12,7 @@ import Signup from './pages/Signup.tsx'
 import MyProfile from './pages/MyProfile.tsx'
 import ResponsiveDrawer from './Components/Drawer.tsx'
 import MySongs from './pages/MySongs.tsx'
+import User from './pages/User.tsx'
 
 
 const App = () => {
@@ -47,12 +48,13 @@ const App = () => {
           <Route path='upload' element={<Upload {...authProps} />} />
           <Route path='listen'>
             <Route index element={<Listen />} />
-            <Route path=':id' element={<ListenTo /> } />
+            <Route path=':id' element={<ListenTo {...authProps} /> } />
           </Route>
           <Route path='profile' element={<ResponsiveDrawer {...authProps} />}>
             <Route index element={<MyProfile {...authProps} />} />
             <Route path='songs' element={<MySongs {...authProps} />} />
           </Route>
+          <Route path='/user/:username' element={<User {...authProps} />} />
         </Route>
         
 
