@@ -1,8 +1,8 @@
 import { Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, TextField, Typography } from "@mui/material";
 import { AuthProps } from "../types";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { FormEvent, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { getAuth } from "../utils";
 import { API_BASE } from "../constants";
 
@@ -15,16 +15,48 @@ const Signup = ({ setAuth, setDanger, setSuccess }: AuthProps) => {
     const [passwordRepeat, setPasswordRepeat] = useState('')
     const [acceptBoxChecked, setBoxChecked] = useState(false) 
 
+    const [incorrectUsername, setIncorrectUsername] = useState<string | false>(false) 
+
     const navigate = useNavigate()
 
+    if (getAuth()) {
+        return <Navigate to='/' />
+    }
+
     useEffect(() => {
-        if (getAuth()) {
-            navigate('/')
+        if (username) {
+            axios.post(`${API_BASE}/api/validate/username`, {
+                username
+            })
+                .then(res => {
+                    const { code } = res.data
+                    setIncorrectUsername(false) 
+
+                    switch (code) {
+                        case "USER_EXISTS":
+                            return setIncorrectUsername('User already exists.')
+                        case "NOT_VALID":
+                            return setIncorrectUsername("This username is not valid.")
+                        case "VALID":
+                            break
+                        default:
+                            return setDanger("Error in handling username validation.")
+                    }
+                })
+                
+                .catch((err: AxiosError) => {
+                    console.error(err)
+                    return setDanger('Error in trying to validate username.')
+                })
+        } else {
+            setIncorrectUsername(false)
         }
-    }, [])
+    }, [username])
+
+    const passwordsMatch = (): boolean => password === passwordRepeat
 
     const isFormValid = (): boolean => {
-        if (!username || !password || !acceptBoxChecked) {
+        if (!username || !password || !acceptBoxChecked || incorrectUsername || !passwordsMatch()) {
             return false
         }
 
@@ -79,6 +111,13 @@ const Signup = ({ setAuth, setDanger, setSuccess }: AuthProps) => {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     sx={{ mb: 2 }}
+                    error={Boolean(incorrectUsername)}
+                    helperText={
+                        incorrectUsername 
+                            ? incorrectUsername
+                            : "Only characters a-z allowed"
+
+                    }
                 />
 
                 <br />
@@ -89,6 +128,7 @@ const Signup = ({ setAuth, setDanger, setSuccess }: AuthProps) => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     sx={{ mb: 2 }}
+                    helperText="Minium 8 characters"
                 />
 
                 <br />
@@ -99,6 +139,8 @@ const Signup = ({ setAuth, setDanger, setSuccess }: AuthProps) => {
                     value={passwordRepeat}
                     onChange={(e) => setPasswordRepeat(e.target.value)}
                     sx={{ mb: 2 }}
+                    error={passwordRepeat.length > 0 && !passwordsMatch()}
+                    helperText={(passwordRepeat.length > 0 && !passwordsMatch()) && "Passwords don't match."}
                 />
 
                 <br />

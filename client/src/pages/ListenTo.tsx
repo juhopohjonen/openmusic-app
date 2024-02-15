@@ -9,6 +9,7 @@ import { Grid, IconButton, Paper, TextField, Typography } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send';
 import CommentElem from '../Components/Comment'
 import { getAuth } from '../utils'
+import RateSong from '../Components/RateSong'
 
 
 const ListenTo = ({ setDanger }: AuthProps) => {
@@ -42,7 +43,7 @@ const ListenTo = ({ setDanger }: AuthProps) => {
 
 
             {
-                song ? <SongCard title={song.title} artist={song.artist.username} src={`${API_BASE}/api/stream/${id}`} /> : <SongCardSkeleton />
+                song ? <SongInfo songId={id} title={song.title} artist={song.artist.username} src={`${API_BASE}/api/stream/${id}`} /> : <SongCardSkeleton />
             }
 
             <CommentList songId={id} />
@@ -50,6 +51,20 @@ const ListenTo = ({ setDanger }: AuthProps) => {
             </Paper>
 
         </>
+    )
+}
+
+const SongInfo = (songCardProps: { title: string, artist: string, src: string, songId: string | undefined }) => {
+    return (
+        <Grid container spacing={2}>
+            <Grid item>
+                <SongCard {...songCardProps} />
+            </Grid>
+
+            <Grid item>
+                <RateSong songId={songCardProps.songId} />
+            </Grid>
+        </Grid>
     )
 }
 

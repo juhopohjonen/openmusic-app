@@ -56,9 +56,6 @@ const App = () => {
           </Route>
           <Route path='/user/:username' element={<User {...authProps} />} />
         </Route>
-        
-
-        
       </Routes>
     </BrowserRouter>
   )

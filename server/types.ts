@@ -29,3 +29,9 @@ export interface Comment {
     user: User,
     song: ObjectId
 }
+
+export interface Rating {
+    grade: number,
+    user: ObjectId,
+    song: Object
+}

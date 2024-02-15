@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express"
 
-const handleObjectIdCastErrors = (err: Error, req: Request, res: Response, next: NextFunction) => {
+const handleMongooseErrors = (err: Error, req: Request, res: Response, next: NextFunction) => {
     const isCastError = 
         err.name === 'CastError'
 
@@ -8,9 +8,14 @@ const handleObjectIdCastErrors = (err: Error, req: Request, res: Response, next:
         return res.status(404).send({ err: "Couldn't be found." })
     }
 
-    console.error('unknown error', err)
+    if (err.name === 'ValidationError') {
+        return res.status(400).send({ err: 'Invalid request' })
+    }
 
-    next(err)
+    console.error('unhandler error', err)
+    res.status(500).send({ err: 'Something went wrong on our side.' })
 }
 
-export default handleObjectIdCastErrors
+
+
+export default handleMongooseErrors

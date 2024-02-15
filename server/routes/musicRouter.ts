@@ -5,9 +5,7 @@ import { upload } from "../utils/uploadHandler";
 import SongModel from "../models/Song";
 import { User, Song } from "../types";
 import CommentModel from "../models/Comment";
-import errorHandler from "../utils/errorHandler";
-
-
+import RatingModel from "../models/Rating";
 
 const musicRouter = Router()
 
@@ -17,7 +15,6 @@ musicRouter.get('/', async (_req, res) => {
 })
 
 musicRouter.get('/:id', async (req, res, next) => {
-
     try {
         const { id } = req.params
         const song = await SongModel.findOne({ _id: id })
@@ -31,11 +28,6 @@ musicRouter.get('/:id', async (req, res, next) => {
     } catch (err) {
         next(err)
     }
-
-
-    
-
-
 })
 
 musicRouter.post('/', requireAuth, upload.single('song'), async (req, res) => {
@@ -107,5 +99,107 @@ musicRouter.get('/:id/comment', async (req, res) => {
 
 })
 
+musicRouter.get('/:id/rating', async (req, res, next) => {
+    const { id } = req.params
+    
+    try {
+        const rates = await RatingModel.find({ song: id })
+
+        const grades = rates.map(rate => rate.grade)
+
+        const avg = grades.reduce((prev, cur) => prev + cur, 0) / grades.length
+    
+        return res.send({ avg })
+    } catch (e) {
+        next(e)
+    }
+
+})
+
+musicRouter.post('/:id/rating', requireAuth, async (req, res, next) => {
+    const { user } = req
+    const { grade } = req.body
+    const { id } = req.params
+
+    if (!user) {
+        return res.status(401).end()
+    }
+
+    if (!grade) {
+        return res.status(400).end()
+    }
+
+    const song = await SongModel.findById(id)
+    if (!song) {
+        return res.status(404).end()
+    }
+
+    const ratingAlreadyExists = await RatingModel.exists({ user: user._id, song: song._id })
+    if (ratingAlreadyExists) {
+        return res.status(409).end()
+    }
+
+    try {
+        const rating = new RatingModel({
+            grade,
+            user: user._id,
+            song: song._id
+        })
+
+        await rating.save()
+
+        return res.send({ grade: rating.grade, code: 'OK' })
+    } catch (e) {
+        next(e)
+    }
+})
+
+musicRouter.get('/:id/my-rating', requireAuth, async (req, res, next) => {
+    const { id } = req.params
+    const user = req.user
+    if (!id || !user) {
+        return res.status(400).end()
+    }
+
+
+    try {
+        // check if already user has rated this song 
+        const rating = await RatingModel.findOne({ song: id, user: user._id })
+        if (!rating) {
+            return res.send({ code: 'NO_RATING' })
+        }
+
+        return res.send({ grade: rating.grade, code: 'OK'})
+    } catch (e) {
+        next(e)
+    }
+})
+
+musicRouter.put('/:id/my-rating', requireAuth, async (req, res, next) => {
+    const { id } = req.params
+    const user = req.user
+    const { grade } = req.body
+
+    if (!id || !user || !grade) {
+        return res.status(400).end()
+    }
+
+
+    try {
+        // check if already user has rated this song 
+        const rating = await RatingModel.findOne({ song: id, user: user._id })
+        if (!rating) {
+            return res.send({ code: 'NO_RATING' })
+        }
+
+        rating.grade = grade;
+
+        await rating.save()
+
+        return res.send({ grade: rating.grade, code: 'OK'})
+    } catch (e) {
+        next(e)
+    }
+})
 
 export default musicRouter

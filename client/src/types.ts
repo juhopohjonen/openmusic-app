@@ -43,7 +43,6 @@ export interface CommentType {
     song: CommentSongInfo,
 }
 
-
 export interface AlertProps {
     successAlert: string | null,
     dangerAlert: string | null,
@@ -51,3 +50,15 @@ export interface AlertProps {
     setSuccess: Function,
     setDanger: Function,
 }
+
+
+interface RatingNotFound {
+    code: 'NOT_FOUND'
+}
+
+interface RatingFound {
+    code: 'OK',
+    grade: number
+}
+
+export type Rating = RatingFound | RatingNotFound
