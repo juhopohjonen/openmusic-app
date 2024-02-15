@@ -6,8 +6,10 @@ import loginRouter from "./routes/loginRouter";
 import musicRouter from "./routes/musicRouter";
 import CORS from 'cors'
 import streamRouter from "./routes/streamRouter";
+import handleObjectIdCastErrors from "./utils/errorHandler";
 
 const app = express()
+
 
 app.use(express.json())
 
@@ -21,6 +23,20 @@ app.use('/api/user', userRouter)
 app.use('/api/login', loginRouter)
 app.use('/api/music', musicRouter)
 app.use('/api/stream', streamRouter)
+
+
+app.get('/asyncerr', async (_req, res, next) => {
+    try {
+        throw new Error('test')
+        return res.end()
+    } catch (e) {
+        next(e)
+    }
+
+})
+
+app.use(handleObjectIdCastErrors)
+
 
 
 mongoose.connect(getValues().MONGODB_URI)

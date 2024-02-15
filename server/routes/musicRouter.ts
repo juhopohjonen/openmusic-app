@@ -5,6 +5,7 @@ import { upload } from "../utils/uploadHandler";
 import SongModel from "../models/Song";
 import { User, Song } from "../types";
 import CommentModel from "../models/Comment";
+import errorHandler from "../utils/errorHandler";
 
 
 
@@ -15,17 +16,25 @@ musicRouter.get('/', async (_req, res) => {
     return res.send(songs)
 })
 
-musicRouter.get('/:id', async (req, res) => {
+musicRouter.get('/:id', async (req, res, next) => {
 
-    const { id } = req.params
-    const song = await SongModel.findOne({ _id: id })
-    if (!song) {
-        return res.status(404).end()
+    try {
+        const { id } = req.params
+        const song = await SongModel.findOne({ _id: id })
+        if (!song) {
+            return res.status(404).end()
+        }
+    
+        const populatedSong = await song.populate<{ artist: User }>('artist')
+    
+        return res.send(populatedSong)
+    } catch (err) {
+        next(err)
     }
 
-    const populatedSong = await song.populate<{ artist: User }>('artist')
 
-    return res.send(populatedSong)
+    
+
 
 })
 
@@ -86,11 +95,17 @@ musicRouter.post('/:id/comment', requireAuth, async (req, res) => {
 musicRouter.get('/:id/comment', async (req, res) => {
     const { id } = req.params
     
-    const comments = await CommentModel.find({ song: id }).populate<{ user: User, song: Song }>('user song')
+
+    try {
+        const comments = await CommentModel.find({ song: id }).populate<{ user: User, song: Song }>('user song')
+        return res.send(comments)
+    } catch (e) {
+        return res.status(404).end()
+    }
 
 
 
-    return res.send(comments)
 })
+
 
 export default musicRouter

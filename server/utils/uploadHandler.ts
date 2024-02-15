@@ -1,7 +1,6 @@
 import multer from "multer";
 import getValues from "../env";
 
-// todo: validate filetypes
 
 const storage = multer.diskStorage({
     destination: (_req, _file, cb) => {
