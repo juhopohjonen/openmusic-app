@@ -1,4 +1,4 @@
-import { Rating, Typography } from "@mui/material"
+import { Rating, Tooltip, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { getAuth } from "../utils"
 import axios from "axios"
@@ -11,14 +11,16 @@ const RateSong = ({ songId }: { songId: string | undefined }) => {
 
     const auth = getAuth()
 
+
     const MY_RATING_API = `${API_BASE}/api/music/${songId}/my-rating`
     const RATING_API = `${API_BASE}/api/music/${songId}/rating`
 
     console.log('val', value)
 
     if (!songId) {
-        return <></>
+        throw new Error('No song id specified')
     }
+
 
     const handleReqErr = (e: Error) => {
         console.error(e)
@@ -90,21 +92,29 @@ const RateSong = ({ songId }: { songId: string | undefined }) => {
                     .catch(e => handleReqErr(e))
             }
     }, [value])
+
+
     return (
         <>
-            <Rating
-                name="song-rate"
-                value={value}
-                onChange={(_e, newValue) => {
-                    if (value) {
-                        newValue && changeRating(newValue)
-                    } else {
-                        newValue && setRating(newValue)
-                    }
-                    
-                }}
-                disabled={!auth}
-            />
+            {
+                auth ? (
+                    <Rating
+                        name="song-rate"
+                        value={value}
+                        onChange={(_e, newValue) => {
+                            if (value) {
+                                newValue && changeRating(newValue)
+                            } else {
+                                newValue && setRating(newValue)
+                            }
+                            
+                        }}
+                        disabled={!auth}
+                    />
+                ) : <UnauthenticatedFeedback />
+            }
+
+
 
             {
                 avg && (
@@ -117,5 +127,19 @@ const RateSong = ({ songId }: { songId: string | undefined }) => {
 
     )
 }
+
+const UnauthenticatedFeedback = () => (
+    <Tooltip title="You need to be logged in for rating this song.">
+
+        <Rating 
+            name="song-rate-unauthenticated"
+            value={null}
+            
+        >
+            
+        </Rating>
+
+    </Tooltip>
+)
 
 export default RateSong

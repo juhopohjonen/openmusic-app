@@ -5,7 +5,7 @@ import { Rating } from "../types";
 const ratingSchema = new mongoose.Schema({
     grade: {
         type: Number,
-        require: true,
+        required: true,
         validate: {
             validator: (grade: number) => {
                 if (grade > 5 || grade < 1) {

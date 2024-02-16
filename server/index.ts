@@ -8,6 +8,7 @@ import CORS from 'cors'
 import streamRouter from "./routes/streamRouter";
 import handleObjectIdCastErrors from "./utils/errorHandler";
 import validateRouter from "./routes/validateRouter";
+import playlistRouter from "./routes/playlistRouter";
 
 const app = express()
 
@@ -25,7 +26,7 @@ app.use('/api/login', loginRouter)
 app.use('/api/music', musicRouter)
 app.use('/api/stream', streamRouter)
 app.use('/api/validate', validateRouter)
-
+app.use('/api/playlist', playlistRouter)
 
 app.get('/asyncerr', async (_req, res, next) => {
     try {

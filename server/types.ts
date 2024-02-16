@@ -35,3 +35,15 @@ export interface Rating {
     user: ObjectId,
     song: Object
 }
+
+export interface Playlist {
+    title: string,
+    author: ObjectId,
+    songs: [ObjectId],
+    isPublic: boolean
+}
+
+
+
+
+export type SongIdArray = string[]

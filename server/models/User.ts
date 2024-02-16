@@ -1,11 +1,13 @@
 import mongoose, { model } from "mongoose";
 import { User } from "../types";
+import { isValidUsername } from "../utils/accountHandler";
 
 const userSchema = new mongoose.Schema<User>({
     username: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        validate: (username: string): boolean => isValidUsername(username) 
     },
 
     pwdHash: {

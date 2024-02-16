@@ -12,6 +12,7 @@ import { getAuth } from '../utils'
 import RateSong from '../Components/RateSong'
 
 
+
 const ListenTo = ({ setDanger }: AuthProps) => {
     const { id } = useParams()
     const [song, setSong] = useState<Song | null>(null)
@@ -61,7 +62,7 @@ const SongInfo = (songCardProps: { title: string, artist: string, src: string, s
                 <SongCard {...songCardProps} />
             </Grid>
 
-            <Grid item>
+            <Grid item sx={{ flexGrow: 1 }}>
                 <RateSong songId={songCardProps.songId} />
             </Grid>
         </Grid>

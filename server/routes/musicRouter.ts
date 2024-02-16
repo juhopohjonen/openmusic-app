@@ -71,6 +71,8 @@ musicRouter.post('/:id/comment', requireAuth, async (req, res) => {
         return res.status(404).end()
     }
 
+
+
     const comment = new CommentModel({
         song: song._id,
         user: req.user._id,
@@ -107,7 +109,8 @@ musicRouter.get('/:id/rating', async (req, res, next) => {
 
         const grades = rates.map(rate => rate.grade)
 
-        const avg = grades.reduce((prev, cur) => prev + cur, 0) / grades.length
+        // reduce grades to array, calc average, round to 1 decimal
+        const avg: number = Number((grades.reduce((prev, cur) => prev + cur, 0) / grades.length).toFixed(1))
     
         return res.send({ avg })
     } catch (e) {
