@@ -129,7 +129,7 @@ const RateSong = ({ songId }: { songId: string | undefined }) => {
 }
 
 const UnauthenticatedFeedback = () => (
-    <Tooltip title="You need to be logged in for rating this song.">
+    <Tooltip title="You need to be logged in to rate this song.">
 
         <Rating 
             name="song-rate-unauthenticated"

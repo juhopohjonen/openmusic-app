@@ -9,7 +9,7 @@ import RatingModel from "../models/Rating";
 
 const musicRouter = Router()
 
-musicRouter.get('/', async (_req, res) => {
+musicRouter.get('/', async (req, res) => {
     const songs = await SongModel.find({}).populate<{ artist: User }>('artist')
     return res.send(songs)
 })

@@ -13,6 +13,10 @@ import MyProfile from './pages/MyProfile.tsx'
 import ResponsiveDrawer from './Components/Drawer.tsx'
 import MySongs from './pages/MySongs.tsx'
 import User from './pages/User.tsx'
+import MyActivity from './pages/MyActivity.tsx'
+import MyPlaylists from './pages/MyPlaylists.tsx'
+import ViewPlaylist from './pages/ViewPlaylist.tsx'
+import Search from './pages/Search.tsx'
 
 
 const App = () => {
@@ -53,9 +57,15 @@ const App = () => {
           <Route path='profile' element={<ResponsiveDrawer {...authProps} />}>
             <Route index element={<MyProfile {...authProps} />} />
             <Route path='songs' element={<MySongs {...authProps} />} />
+            <Route path='activity' element={<MyActivity />} />
           </Route>
           <Route path='/user/:username' element={<User {...authProps} />} />
-        </Route>
+          <Route path='playlists'>
+            <Route path='my' element={<MyPlaylists {...authProps} />} />
+            <Route path=':id' element={<ViewPlaylist {...authProps} />} />
+          </Route>
+          <Route path='search' element={<Search />} />
+        </Route> 
       </Routes>
     </BrowserRouter>
   )

@@ -61,4 +61,25 @@ interface RatingFound {
     grade: number
 }
 
+
+export interface Playlist {
+    title: string,
+    author: User,
+    id: string,
+    songs: Song[],
+    isPublic?: boolean
+}
+
 export type Rating = RatingFound | RatingNotFound
+
+export interface SongSearchProps {
+    song: AutocompleteOption | null,
+    setSong: React.Dispatch<React.SetStateAction<AutocompleteOption | null>>,
+    width?: number | string,
+    label: string
+}
+
+export interface AutocompleteOption {
+    label: string,
+    id: string
+}

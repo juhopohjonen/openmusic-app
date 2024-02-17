@@ -17,6 +17,8 @@ const songSchema = new mongoose.Schema({
     }
 })
 
+songSchema.index({ title: 'text' })
+
 songSchema.set('toJSON', {
     transform: (_doc, returnedObject) => {
         returnedObject.id = returnedObject._id.toString()

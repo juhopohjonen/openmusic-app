@@ -9,6 +9,8 @@ import LoopIcon from '@mui/icons-material/Loop';
 import example from './example.png'
 import { Link } from "react-router-dom";
 
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+
 
 const SongCard = ({ title, artist, src, isControllable=true }: { title: string, artist: string, src: string, isControllable?: boolean }) => {
 
@@ -105,6 +107,7 @@ const SongCard = ({ title, artist, src, isControllable=true }: { title: string, 
                             <IconButton aria-label="loop" onClick={changeLoop}>
                                 <LoopIcon color={isLoop ? 'primary' : 'inherit'} />
                             </IconButton>
+
 
                             </Box>
 

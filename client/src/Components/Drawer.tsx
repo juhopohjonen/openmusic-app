@@ -23,6 +23,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import { Tooltip } from '@mui/material';
 
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
+import GroupsIcon from '@mui/icons-material/Groups';
 
 const drawerWidth = 240;
 
@@ -88,6 +89,16 @@ export default function ResponsiveDrawer({ auth }: AuthProps) {
         </ListItem>
       </List>
 
+      <List>
+        <ListItem disablePadding>
+          <ListItemButton component={Link} to='/profile/activity'>
+            <ListItemIcon>
+              <GroupsIcon />
+            </ListItemIcon>
+            <ListItemText primary="My activity" />
+          </ListItemButton>
+        </ListItem>
+      </List>
 
     </div>
   );

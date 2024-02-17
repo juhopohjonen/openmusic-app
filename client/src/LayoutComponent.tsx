@@ -106,6 +106,10 @@ const Navbar = () => {
         {
             url: '/profile',
             title: 'My profile'
+        },
+        {
+            url: '/playlists/my',
+            title: 'My playlists'
         }
     ]
 

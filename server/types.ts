@@ -6,6 +6,8 @@ export interface User {
     pwdHash: string
 }
 
+export type Author = Pick<User, 'username'>
+
 export interface SignupData {
     username: string,
     password: string

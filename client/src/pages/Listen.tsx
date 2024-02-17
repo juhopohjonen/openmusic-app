@@ -19,7 +19,7 @@ const Listen = () => {
 
     return (
         <>
-            <Typography variant="h1">
+            <Typography sx={{ mb: 1 }} variant="h1">
                 New songs
             </Typography>
 
