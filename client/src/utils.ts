@@ -1,3 +1,4 @@
+import { jwtDecode } from "jwt-decode";
 import { AuthState } from "./types";
 
 const isAuthObject = (auth: unknown): auth is AuthState => {
@@ -8,6 +9,8 @@ const isAuthObject = (auth: unknown): auth is AuthState => {
     return false
 }
 
+
+
 const getAuth = (): AuthState => {
     const storageItem: string | null = window.localStorage.getItem('auth')
     if (!storageItem) {
@@ -17,12 +20,8 @@ const getAuth = (): AuthState => {
 
     try {
         const parsedStorageItem = JSON.parse(storageItem)
-        
-        console.log('completed storageitem str/null test')
 
-        if (isAuthObject(parsedStorageItem)) {
-            console.log('completed isauthobject guard')
-
+        if (isAuthObject(parsedStorageItem) && isTokenValid(parsedStorageItem?.token)) {
             return parsedStorageItem as AuthState
         }
         
@@ -46,10 +45,36 @@ const setStateWithTimeout = (setFunc: React.Dispatch<React.SetStateAction<string
     setTimeout(() => {
         setFunc('')
     }, 3000)
-} 
+}
+
+const isTokenValid = (token: string | undefined): boolean => {
+    if (!token) {
+        return false
+    }
+
+    try {
+        const decoded = jwtDecode(token)
+
+        if (!decoded.exp) {
+            return false 
+        }
+     
+        if (decoded.exp * 1000 < new Date().getTime()) {
+            return false
+        } 
+    
+        return true
+    } catch (e) {
+        console.error('error in parsing, might be expired')
+        return false
+    }
+
+
+}
 
 export {
     getAuth,
     logoutUser,
-    setStateWithTimeout
+    setStateWithTimeout,
+    isTokenValid
 }

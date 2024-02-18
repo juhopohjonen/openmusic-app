@@ -21,8 +21,6 @@ const Login = ({ setAuth, setDanger, setSuccess }: AuthProps) => {
             navigate('/')
         }
 
-        console.log('auth', getAuth())
-
     }, [])
 
 

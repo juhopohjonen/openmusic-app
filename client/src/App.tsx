@@ -22,11 +22,8 @@ import Search from './pages/Search.tsx'
 const App = () => {
   
   const [auth, setAuth] = useState<AuthState>(getAuth())
-  
   const [successAlert, setSuccessValue] = useState('')
   const [dangerAlert, setDangerValue] = useState('')
-
-
 
   const alerts: AlertProps = { successAlert, dangerAlert, setSuccess: (msg: string) => setStateWithTimeout(setSuccessValue, msg), setDanger: (msg: string) => setStateWithTimeout(setDangerValue, msg) }
 

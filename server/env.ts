@@ -31,7 +31,7 @@ const getValues = (): values => {
 
     const MONGODB_URI = process.env.MONGODB_URI
 
-    const expiresIn = "2 days"
+    const expiresIn = process.env.EXPIRES_IN || '2 days'
 
     if (typeof process.env.JWT_SECRET !== 'string') {
         throw new Error('No jwt secret set.')
