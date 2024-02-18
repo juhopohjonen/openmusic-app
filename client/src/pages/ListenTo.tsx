@@ -3,17 +3,22 @@ import { API_BASE } from '../constants'
 import SongCard from '../Components/SongCard'
 import { FormEvent, useEffect, useState } from 'react'
 import axios from 'axios'
-import { AuthProps, CommentType, Song } from '../types'
+import { AuthProps, CommentType, Playlist, Song } from '../types'
 import SongCardSkeleton from '../Components/SongCardSkeleton'
-import { Grid, IconButton, Paper, TextField, Typography } from '@mui/material'
+import { Divider, Grid, Icon, IconButton, Menu, MenuItem, Paper, TextField, Tooltip, Typography } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send';
 import CommentElem from '../Components/Comment'
 import { getAuth } from '../utils'
 import RateSong from '../Components/RateSong'
 
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 
 
-const ListenTo = ({ setDanger }: AuthProps) => {
+
+const ListenTo = (authProps: AuthProps) => {
+
+    const { setDanger } = authProps
+
     const { id } = useParams()
     const [song, setSong] = useState<Song | null>(null)
 
@@ -44,7 +49,7 @@ const ListenTo = ({ setDanger }: AuthProps) => {
 
 
             {
-                song ? <SongInfo songId={id} title={song.title} artist={song.artist.username} src={`${API_BASE}/api/stream/${id}`} /> : <SongCardSkeleton />
+                song ? <SongInfo {...authProps} songId={id} title={song.title} artist={song.artist.username} src={`${API_BASE}/api/stream/${id}`} /> : <SongCardSkeleton />
             }
 
             <CommentList songId={id} />
@@ -55,7 +60,14 @@ const ListenTo = ({ setDanger }: AuthProps) => {
     )
 }
 
-const SongInfo = (songCardProps: { title: string, artist: string, src: string, songId: string | undefined }) => {
+interface SongCardProps extends AuthProps {
+    title: string, 
+    artist: string, 
+    src: string, 
+    songId: string | undefined
+}
+
+const SongInfo = (songCardProps: SongCardProps) => {
     return (
         <Grid container spacing={2}>
             <Grid item>
@@ -64,6 +76,10 @@ const SongInfo = (songCardProps: { title: string, artist: string, src: string, s
 
             <Grid item sx={{ flexGrow: 1 }}>
                 <RateSong songId={songCardProps.songId} />
+            </Grid>
+
+            <Grid item>
+                <AddtoPlaylist {...songCardProps} />
             </Grid>
         </Grid>
     )
@@ -133,6 +149,88 @@ const CommentList = ({ songId }: { songId: string | undefined }) => {
 
 
         </Paper>
+    )
+}
+
+const AddtoPlaylist = (authProps: SongCardProps) => {
+
+    const { auth } = authProps
+
+    if (!auth) {
+        return (
+            <Tooltip title="You have to be logged in to manage playlists">
+                <Icon sx={{ color: 'text.secondary' }}>
+                    <PlaylistAddIcon />
+                </Icon>
+            </Tooltip>
+        )
+    }
+
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+    const isMenuOpen = Boolean(anchorEl)
+    const handleMenuOpenClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(e.currentTarget)
+    }
+
+    const [playlists, setPlaylists] = useState<Playlist[] | null>(null)
+    useEffect(() => {
+        axios.get<Playlist[]>(`${API_BASE}/api/playlist/my`, {
+            headers: {
+                Authorization: `Bearer ${auth.token}`
+            }
+        })
+            .then(res => setPlaylists(res.data))
+            .catch(err => {
+                console.error(err)
+            })
+    }, [])
+
+    return (
+        <>
+            <IconButton onClick={handleMenuOpenClick}>
+                <PlaylistAddIcon />
+            </IconButton>
+            <Menu
+                anchorEl={anchorEl}
+                open={isMenuOpen}
+                onClose={() => setAnchorEl(null)}
+            >
+                <Typography gutterBottom sx={{ ml: 2, mr: 2 }} variant='body1' component='div'>Add to playlist</Typography>
+                <Divider />
+
+                {playlists && playlists.map(playlist => <PlaylistItem playlist={playlist} authProps={authProps} />)}
+            </Menu>
+        </>
+    )
+}
+
+const PlaylistItem = ({ playlist, authProps }: { playlist: Playlist, authProps: SongCardProps }) => {
+    if (!authProps.auth) {
+        return <></>
+    }
+
+    const addToList = () => {
+        axios.post(`${API_BASE}/api/playlist/${playlist.id}/${authProps.songId}`, { }, {
+            headers: {
+                Authorization: `Bearer ${authProps.auth?.token}`
+            }
+        })
+            .then(res => {
+                console.log(res)
+                authProps.setSuccess(`${authProps.title} added to playlist ${playlist.title}`)
+            }) 
+            .catch(err => {
+                console.error(err)
+                if (err.response && err.response.status && err.response.status === 409) {
+                    return authProps.setDanger('Song already exists in playlist')
+                }
+
+                authProps.setDanger('Unknown error')
+            })
+    }
+
+    return (
+        <MenuItem onClick={addToList}>{playlist.title}</MenuItem>
     )
 }
 
