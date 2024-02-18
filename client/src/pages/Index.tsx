@@ -1,8 +1,7 @@
 import { Button, Typography } from "@mui/material"
 import { AuthProps } from '../types'
-import { logoutUser } from "../utils"
 
-const Index = ({ auth, setAuth }: AuthProps) => {
+const Index = ({ auth, logout }: AuthProps) => {
     return (
         <>
             <Typography variant="h1">Music service</Typography>
@@ -13,7 +12,7 @@ const Index = ({ auth, setAuth }: AuthProps) => {
             {
                 !auth ? (
                     <></>
-                ) : <Button variant="outlined" color="error" onClick={() => logoutUser(setAuth)}>Logout</Button>
+                ) : <Button variant="outlined" color="error" onClick={() => logout()}>Logout</Button>
             }
  
         </>

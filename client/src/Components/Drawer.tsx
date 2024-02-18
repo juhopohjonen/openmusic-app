@@ -20,14 +20,14 @@ import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { AuthProps } from '../types';
 
 import HomeIcon from '@mui/icons-material/Home';
-import { Tooltip } from '@mui/material';
+import { Button, Tooltip } from '@mui/material';
 
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
 import GroupsIcon from '@mui/icons-material/Groups';
 
 const drawerWidth = 240;
 
-export default function ResponsiveDrawer({ auth }: AuthProps) {
+export default function ResponsiveDrawer({ auth, logout }: AuthProps) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
 
@@ -53,6 +53,8 @@ export default function ResponsiveDrawer({ auth }: AuthProps) {
       setMobileOpen(!mobileOpen);
     }
   };
+
+
 
   const drawer = (
     <div>
@@ -89,7 +91,7 @@ export default function ResponsiveDrawer({ auth }: AuthProps) {
         </ListItem>
       </List>
 
-      <List>
+      <List sx={{ flexGrow: 1 }}>
         <ListItem disablePadding>
           <ListItemButton component={Link} to='/profile/activity'>
             <ListItemIcon>
@@ -164,6 +166,15 @@ export default function ResponsiveDrawer({ auth }: AuthProps) {
           open
         >
           {drawer}
+          <Button 
+            sx={{ margin: 1 }} 
+            variant='outlined' 
+            color="error"
+            onClick={() => logout()}
+          >
+            Log out
+          </Button>
+
         </Drawer>
       </Box>
       <Box

@@ -36,15 +36,20 @@ const App = () => {
 
     auth,
     setAuth,
+    logout: () => {
+      window.localStorage.removeItem('auth')
+      setAuth(null)
+      alerts.setSuccess('Logout succeed.')
+    }
   }
 
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Layout {...alerts} />}>
+        <Route path='/' element={<Layout {...authProps} />}>
           <Route index element={<Index {...authProps} />} />
-          <Route path='login' element={<Login auth={auth} setAuth={setAuth} {...alerts} />} />
+          <Route path='login' element={<Login {...authProps} />} />
           <Route path='signup' element={<Signup {...authProps} />} />
           <Route path='upload' element={<Upload {...authProps} />} />
           <Route path='listen'>

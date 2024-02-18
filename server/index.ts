@@ -30,15 +30,6 @@ app.use('/api/validate', validateRouter)
 app.use('/api/playlist', playlistRouter)
 app.use('/api/search', searchRouter)
 
-app.get('/asyncerr', async (_req, res, next) => {
-    try {
-        throw new Error('test')
-        return res.end()
-    } catch (e) {
-        next(e)
-    }
-
-})
 
 app.use(handleObjectIdCastErrors)
 

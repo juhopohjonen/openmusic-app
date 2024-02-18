@@ -16,6 +16,7 @@ export interface AuthProps {
     
     successAlert: string | null,
     dangerAlert: string | null,
+    logout: Function
 }
 
 

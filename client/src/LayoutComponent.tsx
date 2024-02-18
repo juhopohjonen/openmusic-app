@@ -6,7 +6,7 @@ import React, { useState } from "react";
 
 import UploadIcon from '@mui/icons-material/Upload';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { AlertProps, MenuItemValues } from "./types";
+import { AlertProps, AuthProps, MenuItemValues } from "./types";
 import { getAuth } from "./utils";
 
 import '@fontsource/roboto/500.css';
@@ -19,11 +19,11 @@ const theme = createTheme({
 })
 
 
-const Layout = (props: AlertProps) => {
+const Layout = (props: AuthProps) => {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Navbar />
+            <Navbar {...props} />
             <Alerts {...props} />
 
             <Container sx={{ mt: 5, mb: 4 }}>
@@ -96,8 +96,7 @@ const MenuItems = ({ setItems }: { setItems?: MenuItemValues[] }) => {
     )
 }
 
-const Navbar = () => {
-    const auth = getAuth()
+const Navbar = ({ auth }: AuthProps) => {
 
     const [anchor, setAnchor] = useState<null | HTMLElement>(null)
     const [userAnchor, setUserAnchor] = useState<null | HTMLElement>(null)
