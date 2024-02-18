@@ -6,6 +6,7 @@ const playlistSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
+        validate: (title: string) => title.length > 0 && title.length < 30 
     },
     author: {
         type: ObjectId,

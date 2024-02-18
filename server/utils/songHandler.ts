@@ -1,5 +1,5 @@
 import SongModel from "../models/Song"
-import { User } from "../types"
+import { Song, User } from "../types"
 
 const parseSongList = async (arr: unknown) => {
     const songs = []
@@ -24,6 +24,18 @@ const parseSongList = async (arr: unknown) => {
 
 }
 
+const isUserAuthor = (user: User, song: Song): boolean => {
+    console.log(user._id, song.artist, user._id === song.artist)
+    
+
+    if (user._id.toString() === song.artist.toString()) {
+        return true
+    }
+
+    return false
+}
+
 export {
-    parseSongList
+    parseSongList,
+    isUserAuthor
 }

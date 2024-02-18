@@ -12,10 +12,8 @@ const handleMongooseErrors = (err: Error, req: Request, res: Response, next: Nex
         return res.status(400).send({ err: 'Invalid request' })
     }
 
-    console.error('unhandler error', err)
+    console.error('unhandled error', err)
     res.status(500).send({ err: 'Something went wrong on our side.' })
 }
-
-
 
 export default handleMongooseErrors

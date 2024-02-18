@@ -1,11 +1,12 @@
 import { Router } from "express";
 import { requireAuth } from "../middlewares";
 
-import { upload } from "../utils/uploadHandler";
+import { removeUploadFile, upload } from "../utils/uploadHandler";
 import SongModel from "../models/Song";
 import { User, Song } from "../types";
 import CommentModel from "../models/Comment";
 import RatingModel from "../models/Rating";
+import { isUserAuthor } from "../utils/songHandler";
 
 const musicRouter = Router()
 
@@ -46,6 +47,31 @@ musicRouter.post('/', requireAuth, upload.single('song'), async (req, res) => {
 
     await song.save()
     return res.send({ song })
+})
+
+musicRouter.delete('/:id', requireAuth, async (req, res, next) => {
+    const { id } = req.params
+    if (!req.user || !id) {
+        return res.status(400).end()
+    }
+
+    try {
+        const song = await SongModel.findById(id)
+        if (!song) {
+            return res.status(404).end()
+        }
+
+
+        if (!isUserAuthor(req.user, song)) {
+            return res.status(401).end()
+        }
+
+        await SongModel.deleteOne({ _id: song._id })
+        removeUploadFile(song.filename)
+        return res.status(204).end()
+    } catch (e) {
+        next(e)
+    }
 })
 
 musicRouter.post('/:id/comment', requireAuth, async (req, res) => {

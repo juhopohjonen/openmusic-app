@@ -1,6 +1,7 @@
 import multer from "multer";
 import getValues from "../env";
-
+import path from 'path'
+import fs from 'fs'
 
 const storage = multer.diskStorage({
     destination: (_req, _file, cb) => {
@@ -21,6 +22,14 @@ const upload = multer({ storage: storage, fileFilter: (_req, file, cb) => {
     cb(null, true)
 }})
 
+const removeUploadFile = async (filename: string) => {
+    const { UPLOADS_PATH } = getValues()
+    const fileLocation = path.join(UPLOADS_PATH, filename)
+
+    fs.unlinkSync(fileLocation)
+}
+
 export {
-    upload
+    upload,
+    removeUploadFile
 }
