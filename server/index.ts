@@ -16,7 +16,7 @@ const app = express()
 
 app.use(express.json())
 
-if (getValues().environment === 'dev') {
+if (getValues().environment === 'dev' || process.env.CORS == 'all') {
     app.use(CORS())
 }
 

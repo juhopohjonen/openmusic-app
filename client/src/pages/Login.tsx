@@ -1,4 +1,4 @@
-import { Button, Divider, TextField, Typography } from "@mui/material"
+import { Box, Button, Divider, Paper, TextField, Typography } from "@mui/material"
 import axios from "axios"
 import { FormEvent, useEffect, useState } from "react"
 import { API_BASE } from "../constants"
@@ -7,6 +7,8 @@ import { AuthProps } from "../types"
 import { getAuth } from "../utils"
 
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import Title from "../Components/Title"
+import { LoadingButton } from "@mui/lab"
 
 const Login = ({ setAuth, setDanger, setSuccess }: AuthProps) => {
     const [username, setUsername] = useState('')
@@ -56,51 +58,57 @@ const Login = ({ setAuth, setDanger, setSuccess }: AuthProps) => {
 
     return (
         <>
-           <Typography variant="h1" gutterBottom>Login</Typography> 
+            <Title title="Login" />
+            <Paper elevation={1} sx={{ p: 2 }}>
+           <Box component='form' onSubmit={(e) => sendLoginRequest(e)} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+            <Typography variant="h3" component='h1' gutterBottom>Login</Typography> 
 
-            {
-                loading ? <p>loading</p> : null
-            }
-
-           <form onSubmit={(e) => sendLoginRequest(e)}>
             <TextField sx={{ mb: 2 }} value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
-            <br />
             <TextField type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" sx={{ mb: 2 }} />
 
-            <br />
 
-            <Button variant="outlined" type="submit">Login</Button>
+            {loading ? (<LoadingButton loading variant="outlined">Login</LoadingButton>) : <Button variant="outlined" type="submit">Login</Button>}
 
             
-           </form>
 
-           <Divider sx={{ width: 300, mt: 2, maxWidth: '100%', mb: 2 }} />
+            
+           </Box>
+           </Paper>
 
-           <Typography
-            component='h2'
-            variant='h5'
-            gutterBottom
-           >
-                No user account - yet?
-           </Typography>
-           <Typography
-                variant="body1"
-                color='text.secondary'
+
+           <Box sx={{ display: 'flex', alignContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+           <Divider sx={{ width: 500, mt: 4, maxWidth: '100%', mb: 2 }} />
+
+
+            <Typography
+                component='h2'
+                variant='h5'
                 gutterBottom
             >
-                Create one for free.
+                    No user account - yet?
             </Typography>
+            <Typography
+                    variant="body1"
+                    color='text.secondary'
+                    gutterBottom
 
-            <Button 
-                startIcon={<PersonAddIcon />}
-                variant="outlined"
-                color="secondary"
-                sx={{ mt: 1 }}
-                component={Link}
-                to='/signup'
-            >
-                Sign up
-            </Button>
+                >
+                    Create one for free.
+                </Typography>
+
+
+                <Button 
+                    startIcon={<PersonAddIcon />}
+                    variant="outlined"
+                    color="secondary"
+                    sx={{ mt: 1 }}
+                    component={Link}
+                    to='/signup'
+                >
+                    Sign up
+                </Button>
+
+            </Box>
 
         </>
     )

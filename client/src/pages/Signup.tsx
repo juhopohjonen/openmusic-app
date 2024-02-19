@@ -5,6 +5,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { getAuth } from "../utils";
 import { API_BASE } from "../constants";
+import Title from "../Components/Title";
 
 const Signup = ({ setAuth, setDanger, setSuccess }: AuthProps) => {
 
@@ -98,6 +99,8 @@ const Signup = ({ setAuth, setDanger, setSuccess }: AuthProps) => {
 
     return (
         <>
+            <Title title="Sign up" />
+
             <Typography variant='h1' gutterBottom>Sign up</Typography>
 
             {

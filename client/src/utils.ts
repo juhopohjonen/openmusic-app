@@ -9,8 +9,6 @@ const isAuthObject = (auth: unknown): auth is AuthState => {
     return false
 }
 
-
-
 const getAuth = (): AuthState => {
     const storageItem: string | null = window.localStorage.getItem('auth')
     if (!storageItem) {
@@ -68,12 +66,14 @@ const isTokenValid = (token: string | undefined): boolean => {
         return false
     }
 
-
 }
+
+const getFullTitle = (title: string) => `${title} - OpenMusic`
 
 export {
     getAuth,
     logoutUser,
     setStateWithTimeout,
-    isTokenValid
+    isTokenValid,
+    getFullTitle
 }

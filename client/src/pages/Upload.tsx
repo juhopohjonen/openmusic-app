@@ -8,6 +8,7 @@ import axios from "axios";
 import { API_BASE } from "../constants.ts";
 import { AuthProps } from "../types.ts";
 import { Navigate, useNavigate } from "react-router-dom";
+import Title from "../Components/Title.tsx";
 
 
 const Upload = ({ auth, setSuccess, setDanger }: AuthProps) => {
@@ -51,6 +52,9 @@ const Upload = ({ auth, setSuccess, setDanger }: AuthProps) => {
 
     return (
         <>
+            
+            <Title title="Upload" />
+
             <RequireAuth />
             <Typography gutterBottom variant="h1">
                 Upload music

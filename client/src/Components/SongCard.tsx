@@ -118,7 +118,7 @@ const SongCard = ({ title, artist, src, isControllable=true }: { title: string, 
 
             </Box>
 
-            <audio src={src} ref={audioRef} hidden />
+            {isControllable && <audio src={src} ref={audioRef} hidden />}
         </Card>
     )
 }

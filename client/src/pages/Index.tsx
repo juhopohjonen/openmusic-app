@@ -1,9 +1,11 @@
 import { Button, Typography } from "@mui/material"
 import { AuthProps } from '../types'
+import Title from "../Components/Title"
 
 const Index = ({ auth, logout }: AuthProps) => {
     return (
         <>
+            <Title title="Home" />
             <Typography variant="h1">Music service</Typography>
             <Typography variant="body1" sx={{ mb: 4 }} component='p' color='text.secondary'>
                 OpenMusic is a platform where musicians around the world can upload their own music and listen to amazing songs.

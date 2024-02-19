@@ -12,7 +12,9 @@ interface values {
 
 
 const getValues = (): values => {
-    dotenv.config()
+    if (process.env.environment === 'dev') {
+        dotenv.config()
+    }
 
 
     const port = 

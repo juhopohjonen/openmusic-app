@@ -7,6 +7,7 @@ import { AuthProps, Playlist, Song } from "../types"
 
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
+import Title from "../Components/Title"
 
 
 const ViewPlaylist = ({ setDanger }: AuthProps) => {
@@ -31,6 +32,7 @@ const ViewPlaylist = ({ setDanger }: AuthProps) => {
     
     return (
         <>
+            <Title title={playlist ? playlist.title : 'View playlist'} />
             <Typography variant="h2" sx={{ mb: 0.5 }}>View playlist <b>{playlist && playlist.title}</b></Typography>
             <Typography variant="subtitle1" color="text.secondary" gutterBottom>This playlist is created by {playlist && playlist.author.username}</Typography>
             { 

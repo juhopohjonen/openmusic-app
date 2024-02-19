@@ -16,7 +16,6 @@ import User from './pages/User.tsx'
 import MyActivity from './pages/MyActivity.tsx'
 import MyPlaylists from './pages/MyPlaylists.tsx'
 import ViewPlaylist from './pages/ViewPlaylist.tsx'
-import Search from './pages/Search.tsx'
 
 
 const App = () => {
@@ -66,7 +65,6 @@ const App = () => {
             <Route path='my' element={<MyPlaylists {...authProps} />} />
             <Route path=':id' element={<ViewPlaylist {...authProps} />} />
           </Route>
-          <Route path='search' element={<Search />} />
         </Route> 
       </Routes>
     </BrowserRouter>

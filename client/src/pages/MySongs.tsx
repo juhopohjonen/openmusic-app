@@ -3,6 +3,7 @@ import RequireAuth from "../Components/RequireAuth"
 import { AuthProps } from "../types"
 
 import UserSongs from "../Components/UserSongs"
+import Title from "../Components/Title"
 
 const MySongs = (props: AuthProps) => {
 
@@ -14,6 +15,8 @@ const MySongs = (props: AuthProps) => {
 
     return (
         <>
+            <Title title="My songs" />
+
             <RequireAuth />
             <Typography variant="h2" component='h1' gutterBottom>My songs</Typography>
 

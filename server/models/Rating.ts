@@ -21,7 +21,6 @@ const ratingSchema = new mongoose.Schema({
     user: {
         type: ObjectId,
         ref: 'UserModel',
-        unique: true
     },
 
     song: {

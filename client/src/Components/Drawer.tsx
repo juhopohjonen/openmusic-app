@@ -55,7 +55,6 @@ export default function ResponsiveDrawer({ auth, logout }: AuthProps) {
   };
 
 
-
   const drawer = (
     <div>
       <List>
@@ -170,7 +169,7 @@ export default function ResponsiveDrawer({ auth, logout }: AuthProps) {
             sx={{ margin: 1 }} 
             variant='outlined' 
             color="error"
-            onClick={() => logout()}
+            onClick={() => { logout(); navigate('/') }}
           >
             Log out
           </Button>

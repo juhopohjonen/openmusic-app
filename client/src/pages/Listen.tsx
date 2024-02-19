@@ -4,6 +4,8 @@ import { Song } from "../types"
 import axios from "axios"
 import { API_BASE } from "../constants"
 import SongList from "../Components/SongList"
+import Title from "../Components/Title"
+
 
 
 const Listen = () => {
@@ -19,6 +21,7 @@ const Listen = () => {
 
     return (
         <>
+            <Title title="New songs" />
             <Typography sx={{ mb: 1 }} variant="h1">
                 New songs
             </Typography>

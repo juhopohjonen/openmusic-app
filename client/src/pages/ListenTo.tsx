@@ -5,13 +5,15 @@ import { FormEvent, useEffect, useState } from 'react'
 import axios from 'axios'
 import { AuthProps, CommentType, Playlist, Song } from '../types'
 import SongCardSkeleton from '../Components/SongCardSkeleton'
-import { Divider, Grid, Icon, IconButton, Menu, MenuItem, Paper, TextField, Tooltip, Typography } from '@mui/material'
+import { Button, Divider, Grid, Icon, IconButton, Menu, MenuItem, Paper, TextField, Tooltip, Typography } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send';
 import CommentElem from '../Components/Comment'
 import { getAuth } from '../utils'
 import RateSong from '../Components/RateSong'
 
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Title from '../Components/Title'
 
 
 
@@ -32,12 +34,9 @@ const ListenTo = (authProps: AuthProps) => {
     }, [])
 
 
-
-    console.log(song)
-
     return (
         <>
-
+            <Title title={song ? song.title : 'Listen to song'} />
             <Typography gutterBottom variant='h2' component='h1'>Listen to <b>{ song && song.title ? song.title : '...' }</b></Typography>
 
             <Paper
@@ -60,6 +59,49 @@ const ListenTo = (authProps: AuthProps) => {
     )
 }
 
+const SongAuthorMenu = ({ auth, songId, setSuccess, setDanger }: SongCardProps) => {
+
+    if (!auth) {
+        return
+    }
+
+    const [anchor, setAnchor] = useState<HTMLElement | null>(null)
+    const navigate = useNavigate()
+
+
+    const removeSong = () => {
+        axios.delete(`${API_BASE}/api/music/${songId}`, {
+            headers: {
+                Authorization: `Bearer ${auth.token}`
+            }
+        })
+            .then(() => {
+                setSuccess('Successfully removed song.')
+                navigate('/')
+            })
+            .catch(err => {
+                console.error(err)
+                setDanger('Something happened in removing the song.')
+            })
+    }
+
+    return (
+        <>
+            <IconButton onClick={(e) => setAnchor(e.currentTarget)}>
+                <MoreVertIcon />
+            </IconButton>
+
+            <Menu
+                anchorEl={anchor}
+                open={Boolean(anchor)}
+                onClose={() => setAnchor(null)}
+            >
+                <Button onClick={removeSong} sx={{ mr: 1, ml: 1 }} variant='contained' color='error'>Remove song</Button>
+            </Menu>
+        </>
+    )
+}
+
 interface SongCardProps extends AuthProps {
     title: string, 
     artist: string, 
@@ -68,6 +110,10 @@ interface SongCardProps extends AuthProps {
 }
 
 const SongInfo = (songCardProps: SongCardProps) => {
+    const isUserArtist = 
+        songCardProps.artist === songCardProps.auth?.username
+
+
     return (
         <Grid container spacing={2}>
             <Grid item>
@@ -79,6 +125,10 @@ const SongInfo = (songCardProps: SongCardProps) => {
             </Grid>
 
             <Grid item>
+                
+                {isUserArtist && <SongAuthorMenu {...songCardProps} />}
+
+                
                 <AddtoPlaylist {...songCardProps} />
             </Grid>
         </Grid>

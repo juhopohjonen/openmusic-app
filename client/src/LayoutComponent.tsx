@@ -1,5 +1,6 @@
 import { Alert, AppBar, Button, Collapse, Container, CssBaseline, IconButton, Menu, MenuItem, ThemeProvider, Toolbar, Typography, createTheme } from "@mui/material"
 import { Link, Outlet } from "react-router-dom"
+import { Helmet } from 'react-helmet'
 
 import MenuIcon from '@mui/icons-material/Menu';
 import React, { useState } from "react";
@@ -7,13 +8,18 @@ import React, { useState } from "react";
 import UploadIcon from '@mui/icons-material/Upload';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { AlertProps, AuthProps, MenuItemValues } from "./types";
-import { getAuth } from "./utils";
 
 import '@fontsource/roboto/500.css';
 
 const theme = createTheme({
     palette: {
-        mode: 'dark'
+        mode: 'dark',
+        primary: {
+            main: '#18ff9b'
+        },
+        secondary: {
+            main: '#fc77c7'
+        }
     },
 
 })
@@ -22,6 +28,11 @@ const theme = createTheme({
 const Layout = (props: AuthProps) => {
     return (
         <ThemeProvider theme={theme}>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>OpenMusic</title>
+            </Helmet>
+
             <CssBaseline />
             <Navbar {...props} />
             <Alerts {...props} />
@@ -55,13 +66,13 @@ const AnimatedAlert = ({ msg, severity }: { msg: string | null, severity: 'error
     <div>
         <Collapse in={Boolean(msg)}>
             {
-                msg && (
-                    <Alert
-                        severity={severity}
-                    >
-                        {msg}
-                    </Alert>
-                )
+                
+                <Alert
+                    severity={severity}
+                >
+                    {msg && msg}
+                </Alert>
+                
             }
         </Collapse>
     </div>

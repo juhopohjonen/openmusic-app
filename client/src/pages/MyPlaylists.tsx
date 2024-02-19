@@ -7,6 +7,7 @@ import { API_BASE } from "../constants"
 import SongSearch from "../Components/SongSearch"
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import Title from "../Components/Title"
 const MyPlaylists = (authProps: AuthProps) => {
     const { auth, setDanger } = authProps
 
@@ -44,6 +45,7 @@ const MyPlaylists = (authProps: AuthProps) => {
 
     return (
         <>
+            <Title title="My playlists" />
             <Typography variant="h3" component='h1'>My playlists</Typography>
             {
                 playlists 
@@ -117,15 +119,21 @@ const PlaylistCreator = ({ auth, setDanger, closeCreator, addToPlaylist }: Playl
         })
             .then(res => {
                 addToPlaylist(res.data)
-                closeCreator()
             })
             .catch(err => {
                 console.error(err)
                 setDanger('Error in creating playlist.')
             })
+            .then(() => closeCreator())
     }
 
-    const isValidPlaylist = name && selectedSongs.length > 0 
+    const isValidPlaylist = name && selectedSongs.length > 0
+    
+    const changePlaylistName = (targetValue: string) => {
+        if (targetValue.length < 30) {
+            setName(targetValue)
+        }
+    }
 
 
     return (
@@ -137,8 +145,9 @@ const PlaylistCreator = ({ auth, setDanger, closeCreator, addToPlaylist }: Playl
 
 
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => changePlaylistName(e.target.value)}
                 sx={{ mb: 1 }}
+                
             />
 
             <br />
