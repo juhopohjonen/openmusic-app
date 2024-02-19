@@ -1,5 +1,6 @@
 import UserModel from "../models/User"
 
+// eslint-disable-next-line
 const VALID_USERNAME_REGEX = /^[a-z0-9_\-]+$/
 
 const doesAccountExist = async (username: string): Promise<boolean> => {

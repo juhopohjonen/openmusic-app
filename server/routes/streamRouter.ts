@@ -2,7 +2,6 @@ import { Router } from "express"
 import SongModel from "../models/Song"
 import path from 'path'
 import getValues from "../env"
-import fs from 'fs'
 
 const streamRouter = Router()
 

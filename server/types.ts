@@ -35,7 +35,7 @@ export interface Comment {
 export interface Rating {
     grade: number,
     user: ObjectId,
-    song: Object
+    song: ObjectId
 }
 
 export interface Playlist {
