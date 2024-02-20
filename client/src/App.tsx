@@ -52,7 +52,7 @@ const App = () => {
           <Route path='signup' element={<Signup {...authProps} />} />
           <Route path='upload' element={<Upload {...authProps} />} />
           <Route path='listen'>
-            <Route index element={<Listen />} />
+            <Route index element={<Listen {...authProps} />} />
             <Route path=':id' element={<ListenTo {...authProps} /> } />
           </Route>
           <Route path='profile' element={<ResponsiveDrawer {...authProps} />}>

@@ -8,6 +8,7 @@ const streamRouter = Router()
 streamRouter.get('/:id', async (req, res, next) => {
     const { id } = req.params
 
+
     try {
         const song = await SongModel.findOne({ _id: id })
 
