@@ -9,7 +9,6 @@ OpenMusic is a dynamic web application built upon the Jamstack architectural app
 - **React:** The frontend of OpenMusic is developed using React, offering a dynamic and interactive user experience.
 - **MongoDB:** OpenMusic utilizes MongoDB as its database solution, enabling efficient storage and retrieval of music data.
 - **Material UI:** The user interface of OpenMusic is designed with Material UI, offering a sleek and responsive design that enhances user engagement.
-- **API Interface:** OpenMusic provides a well-defined API interface, allowing musicians to seamlessly interact with the platform and publish their songs.
 
 ## Prerequisites
 To run OpenMusic locally, ensure that you have Node.js installed on your system. Additionally, make sure to set up the required environmental values: MONGODB_URI, JWT_SECRET, and UPLOADS_PATH.
