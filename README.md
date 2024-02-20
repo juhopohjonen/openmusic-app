@@ -23,10 +23,10 @@ To get started with OpenMusic, follow these steps:
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/OpenMusic.git
+git clone https://github.com/juhopohjonen/openmusic-app
 
-# Navigate to the project directory
-cd OpenMusic
+# Navigate to the projects server directory
+cd cd openmusic-app/server
 
 # Install dependencies
 npm install
