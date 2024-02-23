@@ -5,7 +5,7 @@ import { FormEvent, useEffect, useState } from 'react'
 import axios from 'axios'
 import { AuthProps, CommentType, Playlist, Song } from '../types'
 import SongCardSkeleton from '../Components/SongCardSkeleton'
-import { Button, Divider, Grid, Icon, IconButton, Menu, MenuItem, Paper, TextField, Tooltip, Typography } from '@mui/material'
+import { Box, Button, Divider, Grid, Icon, IconButton, Menu, MenuItem, Paper, TextField, Tooltip, Typography } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send';
 import CommentElem from '../Components/Comment'
 import { getAuth } from '../utils'
@@ -48,7 +48,7 @@ const ListenTo = (authProps: AuthProps) => {
 
 
             {
-                song ? <SongInfo {...authProps} songId={id} title={song.title} artist={song.artist.username} src={`${API_BASE}/api/stream/${id}`} /> : <SongCardSkeleton />
+                song ? <SongInfo {...authProps} song={song} /> : <SongCardSkeleton />
             }
 
             <CommentList songId={id} />
@@ -61,7 +61,7 @@ const ListenTo = (authProps: AuthProps) => {
     )
 }
 
-const SongAuthorMenu = ({ auth, songId, setSuccess, setDanger }: SongCardProps) => {
+const SongAuthorMenu = ({ auth, song, setSuccess, setDanger }: SongCardProps) => {
 
     if (!auth) {
         return
@@ -72,7 +72,7 @@ const SongAuthorMenu = ({ auth, songId, setSuccess, setDanger }: SongCardProps) 
 
 
     const removeSong = () => {
-        axios.delete(`${API_BASE}/api/music/${songId}`, {
+        axios.delete(`${API_BASE}/api/music/${song.id}`, {
             headers: {
                 Authorization: `Bearer ${auth.token}`
             }
@@ -105,30 +105,29 @@ const SongAuthorMenu = ({ auth, songId, setSuccess, setDanger }: SongCardProps) 
 }
 
 interface SongCardProps extends AuthProps {
-    title: string, 
-    artist: string, 
-    src: string, 
-    songId: string | undefined
+    song: Song
 }
 
 const SongInfo = (songCardProps: SongCardProps) => {
+    const { song, auth } = songCardProps
+
     const isUserArtist = 
-        songCardProps.artist === songCardProps.auth?.username
+        song.artist.username === auth?.username
 
 
     return (
         <Grid container spacing={2}>
             <Grid item>
-                <SongCard {...songCardProps} />
+                <SongCard {...song} />
             </Grid>
 
             <Grid item sx={{ flexGrow: 1 }}>
-                <RateSong songId={songCardProps.songId} />
+                <RateSong songId={song.id} />
             </Grid>
 
             <Grid item>
                 
-                {isUserArtist && <SongAuthorMenu {...songCardProps} />}
+                {isUserArtist && <SongAuthorMenu {...songCardProps}  />}
 
                 
                 <AddtoPlaylist {...songCardProps} />
@@ -138,6 +137,7 @@ const SongInfo = (songCardProps: SongCardProps) => {
 }
 
 const CommentList = ({ songId }: { songId: string | undefined }) => {
+    const MAX_COMMENT_LENGTH = 75
 
     const navigate = useNavigate()
 
@@ -153,6 +153,16 @@ const CommentList = ({ songId }: { songId: string | undefined }) => {
     }, [])
 
     const [newComInput, setNewComInput] = useState('')
+
+    const newComInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target
+        if (value.length > MAX_COMMENT_LENGTH) {
+            return
+        }
+
+        setNewComInput(value)
+
+    }
 
     const sendComment = (e: FormEvent<HTMLFormElement>) => {
         setNewComInput('')
@@ -174,6 +184,8 @@ const CommentList = ({ songId }: { songId: string | undefined }) => {
             .catch(err => console.error(err))
     }
 
+
+
     return (
         <Paper elevation={10} sx={{ p: 2, mt: 2 }}>
             <Typography variant='h5' component='div' gutterBottom>Comments</Typography>
@@ -181,21 +193,26 @@ const CommentList = ({ songId }: { songId: string | undefined }) => {
             {comments.map((c, i) => <CommentElem key={`${c.user.username}-key-${i}`} content={c.content} username={c.user.username} /> )}
 
 
-            <Grid container component='form' onSubmit={sendComment}>
+            <Grid sx={{ mt: 2 }} container component='form' onSubmit={sendComment}>
 
-                <Grid item>
-                <TextField
-                    placeholder='Write a comment...'
-                    value={newComInput}
-                    onChange={(e) => setNewComInput(e.target.value)}
-                />
+                <Grid item xs={8}>
+                    <Box>
+                        <TextField
+                            placeholder='Write a comment...'
+                            value={newComInput}
+                            onChange={newComInputChange}
+                            fullWidth
+                        />
+                    </Box>
                 </Grid>
 
-                <Grid item>
+                <Grid item sx={{ flexGrow: 1 }}>
                     <IconButton disabled={!newComInput} type='submit' sx={{ mt: 1, ml: 1 }}>
                         <SendIcon />
                     </IconButton>
                 </Grid>
+
+                <CommentLengthDisplay length={newComInput.length} maxLength={MAX_COMMENT_LENGTH} />
 
             </Grid>
 
@@ -204,13 +221,19 @@ const CommentList = ({ songId }: { songId: string | undefined }) => {
     )
 }
 
+const CommentLengthDisplay = ({ length, maxLength=50 }: { length: number, maxLength?: number }) => (
+    <Grid item>
+        <Typography variant='body2' color="text.secondary" sx={{ mt: 2 }}>{length} / {maxLength}</Typography>
+    </Grid>
+)
+
 const AddtoPlaylist = (authProps: SongCardProps) => {
 
     const { auth } = authProps
 
     if (!auth) {
         return (
-            <Tooltip title="You have to be logged in to manage playlists">
+            <Tooltip title="You have to be logged in to manage playlists" enterTouchDelay={50}>
                 <Icon sx={{ color: 'text.secondary' }}>
                     <PlaylistAddIcon />
                 </Icon>
@@ -250,7 +273,7 @@ const AddtoPlaylist = (authProps: SongCardProps) => {
                 <Typography gutterBottom sx={{ ml: 2, mr: 2 }} variant='body1' component='div'>Add to playlist</Typography>
                 <Divider />
 
-                {playlists && playlists.map(playlist => <PlaylistItem playlist={playlist} authProps={authProps} />)}
+                {playlists && playlists.map(playlist => <PlaylistItem key={playlist.id} playlist={playlist} authProps={authProps} />)}
             </Menu>
         </>
     )
@@ -262,14 +285,14 @@ const PlaylistItem = ({ playlist, authProps }: { playlist: Playlist, authProps: 
     }
 
     const addToList = () => {
-        axios.post(`${API_BASE}/api/playlist/${playlist.id}/${authProps.songId}`, { }, {
+        axios.post(`${API_BASE}/api/playlist/${playlist.id}/${authProps.song.id}`, { }, {
             headers: {
                 Authorization: `Bearer ${authProps.auth?.token}`
             }
         })
             .then(res => {
                 console.log(res)
-                authProps.setSuccess(`${authProps.title} added to playlist ${playlist.title}`)
+                authProps.setSuccess(`${authProps.song.title} added to playlist ${playlist.title}`)
             }) 
             .catch(err => {
                 console.error(err)

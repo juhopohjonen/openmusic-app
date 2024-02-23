@@ -6,12 +6,18 @@ import PauseIcon from '@mui/icons-material/Pause';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import LoopIcon from '@mui/icons-material/Loop';
 
-import example from './example.png'
 import { Link } from "react-router-dom";
+import { Song } from "../types";
+import { API_BASE } from "../constants";
 
+interface SongCardProps extends Song {
+    isControllable?: boolean
+}
 
+const SongCard = ({ title, artist, id, isControllable=true }: SongCardProps) => {
 
-const SongCard = ({ title, artist, src, isControllable=true }: { title: string, artist: string, src: string, isControllable?: boolean }) => {
+    const src = `${API_BASE}/api/stream/song/${id}`
+
 
     const [isPlaying, setPlaying] = useState(false)
     const [isLoop, setLoop] = useState(false)
@@ -64,8 +70,8 @@ const SongCard = ({ title, artist, src, isControllable=true }: { title: string, 
 
             <CardMedia
                 component="img"
-                sx={{ width: 100 }}
-                image={example}
+                sx={{ width: 120 }}
+                src={`${src}/cover`}
                 alt="Live from space album cover"
             />
 
@@ -79,10 +85,10 @@ const SongCard = ({ title, artist, src, isControllable=true }: { title: string, 
 
                 {
                     isControllable ? (
-                        <Typography component={Link} to={`/user/${artist}`} variant="subtitle1" color="text.secondary">
-                            {artist}
+                        <Typography component={Link} to={`/user/${artist.username}`} variant="subtitle1" color="text.secondary">
+                            {artist.username}
                         </Typography>
-                    ) : <UncontrollableUserInfo username={artist} />
+                    ) : <UncontrollableUserInfo username={artist.username} />
                 }
 
 

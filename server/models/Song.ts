@@ -14,6 +14,10 @@ const songSchema = new mongoose.Schema({
     filename: {
         type: String,
         required: true
+    },
+    coverImageFile: {
+        type: String,
+        required: true
     }
 })
 
@@ -25,6 +29,7 @@ songSchema.set('toJSON', {
         delete returnedObject._id
         delete returnedObject.__v
         delete returnedObject.filename
+        delete returnedObject.coverImageFile
     }
 })
 

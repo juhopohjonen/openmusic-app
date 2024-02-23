@@ -43,13 +43,13 @@ const ViewPlaylist = ({ setDanger }: AuthProps) => {
     )
 }
 
-const PlaylistSongList = ({ songs }: { songs: Song[] }) => {
+export const PlaylistSongList = ({ songs }: { songs: Song[] }) => {
     const [songIdPlaying, setSongIdPlaying] = useState<string | null>(null)
     const audioRef = useRef<HTMLAudioElement>(null)
 
     const src =
         songIdPlaying 
-            ? `${API_BASE}/api/stream/${songIdPlaying}`
+            ? `${API_BASE}/api/stream/song/${songIdPlaying}`
             : null
 
 

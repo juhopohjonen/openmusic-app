@@ -91,6 +91,8 @@ const RateSong = ({ songId }: { songId: string | undefined }) => {
                     })
                     .catch(e => handleReqErr(e))
             }
+
+
     }, [value])
 
 
@@ -110,6 +112,7 @@ const RateSong = ({ songId }: { songId: string | undefined }) => {
                             
                         }}
                         disabled={!auth}
+                        readOnly={!auth}
                     />
                 ) : <UnauthenticatedFeedback />
             }
@@ -129,12 +132,14 @@ const RateSong = ({ songId }: { songId: string | undefined }) => {
 }
 
 const UnauthenticatedFeedback = () => (
-    <Tooltip title="You need to be logged in to rate this song.">
+    <Tooltip 
+        title="You need to be logged in to rate this song."
+        enterTouchDelay={50}
+    >
 
         <Rating 
             name="song-rate-unauthenticated"
-            value={null}
-            
+            value={0}
         >
             
         </Rating>

@@ -1,12 +1,11 @@
-import { Router } from "express";
-import { requireAuth } from "../middlewares";
-
-import { removeUploadFile, upload } from "../utils/uploadHandler";
-import SongModel from "../models/Song";
-import { User, Song } from "../types";
+import { Router } from "express"
+import { requireAuth } from "../middlewares"
+import SongModel from "../models/Song"
+import { User, Song } from "../types"
 import CommentModel from "../models/Comment";
 import RatingModel from "../models/Rating";
 import { isUserAuthor } from "../utils/songHandler";
+import { removeUploadFile, upload } from "../utils/uploadHandler";
 
 const musicRouter = Router()
 
@@ -31,10 +30,16 @@ musicRouter.get('/:id', async (req, res, next) => {
     }
 })
 
-musicRouter.post('/', requireAuth, upload.single('song'), async (req, res) => {
-    if (!req.user || !req.file || !req.body.title) {
-        throw new Error
+musicRouter.post('/', requireAuth, upload.fields([{ name: 'song', maxCount: 1 }, { name: 'coverImg', maxCount: 1 }]), async (req, res) => {
+    if (!req.user || !req.files || !req.body.title) {
+        console.log('fields', req.user, req.files, req.body.title, typeof req.files)
+        return res.status(400).end()
     }
+
+    const files = req.files as { [ fieldname: string ]: Express.Multer.File[] }
+
+    const songFile = files['song'][0]
+    const coverImg = files['coverImg'][0]
 
     const userId = req.user._id
     const { title } = req.body
@@ -42,11 +47,13 @@ musicRouter.post('/', requireAuth, upload.single('song'), async (req, res) => {
     const song = new SongModel({
         artist: userId,
         title,
-        filename: req.file.filename
+        filename: songFile.filename,
+        coverImageFile: coverImg.filename
     })
 
     await song.save()
     return res.send({ song })
+    
 })
 
 musicRouter.delete('/:id', requireAuth, async (req, res, next) => {
@@ -67,14 +74,17 @@ musicRouter.delete('/:id', requireAuth, async (req, res, next) => {
         }
 
         await SongModel.deleteOne({ _id: song._id })
+
         removeUploadFile(song.filename)
+        removeUploadFile(song.coverImageFile)
+
         return res.status(204).end()
     } catch (e) {
         next(e)
     }
 })
 
-musicRouter.post('/:id/comment', requireAuth, async (req, res) => {
+musicRouter.post('/:id/comment', requireAuth, async (req, res, next) => {
 
     if (!req.params.id) {
         return res.status(400).end()
@@ -91,24 +101,30 @@ musicRouter.post('/:id/comment', requireAuth, async (req, res) => {
         throw Error
     }
 
-    // check exists -> find song by id
-    const song = await SongModel.findById(id)
-    if (!song) {
-        return res.status(404).end()
+    try {
+
+        // check exists -> find song by id
+        const song = await SongModel.findById(id)
+        if (!song) {
+            return res.status(404).end()
+        }
+
+
+
+        const comment = new CommentModel({
+            song: song._id,
+            user: req.user._id,
+            content: commentText
+        })
+
+        await comment.save()
+
+        const populatedComment = await comment.populate<{ user: User, song: Song }>('user song')
+        return res.send(populatedComment)
+
+    } catch (e) {
+        next(e)
     }
-
-
-
-    const comment = new CommentModel({
-        song: song._id,
-        user: req.user._id,
-        content: commentText
-    })
-
-    await comment.save()
-
-    const populatedComment = await comment.populate<{ user: User, song: Song }>('user song')
-    return res.send(populatedComment)
 
 })
 

@@ -4,10 +4,13 @@ import UserModel from "./User"
 import SongModel from "./Song"
 import { Comment } from "../types"
 
+const MAX_COMMENT_LENGTH = 75
+
 const commentSchema = new mongoose.Schema({
     content: {
         type: String,
-        required: true
+        required: true,
+        validate: (content: string) => content.length > 0 && content.length <= MAX_COMMENT_LENGTH
     },
 
     user: {

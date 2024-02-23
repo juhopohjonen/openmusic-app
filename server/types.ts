@@ -23,6 +23,7 @@ export interface Song {
     title: string,
     artist: ObjectId,
     filename: string,
+    coverImageFile: string,
     _id: ObjectId
 }
 
@@ -44,7 +45,6 @@ export interface Playlist {
     songs: [ObjectId],
     isPublic: boolean
 }
-
 
 
 export type SongIdArray = string[]

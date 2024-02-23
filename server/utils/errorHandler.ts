@@ -1,6 +1,7 @@
-import { Request, Response } from "express"
+import { NextFunction, Request, Response } from "express"
 
-const handleMongooseErrors = (err: Error, req: Request, res: Response) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const handleMongooseErrors = (err: Error, _req: Request, res: Response, _next: NextFunction) => {
     const isCastError = 
         err.name === 'CastError'
 

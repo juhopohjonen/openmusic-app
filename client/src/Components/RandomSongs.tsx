@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Song } from "../types"
 import axios from "axios"
 import { API_BASE } from "../constants"
-import { Box, Card, CardContent, CardMedia, Collapse, Fade, Grid, Typography, Zoom } from "@mui/material"
+import { Box, Card, CardContent, CardMedia, Fade, Grid, Typography, Zoom } from "@mui/material"
 import { Link } from "react-router-dom"
 
 const getRandomSongs = (songs: Song[]) => {
@@ -55,9 +55,10 @@ const RandomSongs = () => {
 }
 
 const SongHero = ({ song }: { song: Song }) => (
+
     <Card>
         <CardMedia
-            image="/example.png"
+            image={`${API_BASE}/api/stream/song/${song.id}/cover`}
             sx={{ height: 100, width: '100%' }}
         />
 

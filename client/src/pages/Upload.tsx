@@ -23,10 +23,11 @@ const Upload = ({ auth, setSuccess, setDanger }: AuthProps) => {
         )
     }
 
-    const sendUploadRequest = (song: any, songTitle: any) => {
+    const sendUploadRequest = (song: File, songTitle: File, coverImg: File) => {
         const formData = new FormData()
         formData.append("song", song)
         formData.append("title", songTitle)
+        formData.append("coverImg", coverImg)
 
 
         console.log(auth.token)
@@ -111,7 +112,7 @@ const UploadMusicForm = ({ sendReqFunc }: { sendReqFunc: Function }) => {
             return
         }
 
-        sendReqFunc(songInput, songName)
+        sendReqFunc(songInput, songName, coverImg)
     }
 
     return (
@@ -139,11 +140,11 @@ const UploadMusicForm = ({ sendReqFunc }: { sendReqFunc: Function }) => {
             
             <Button sx={{ mt: 2 }} component="label" color="secondary" variant="text" startIcon={<CloudUploadIcon />}>
                 Set cover icon
-                <VisuallyHiddenInput onChange={songCoverChange} type="file" accept=".png,.jpg" />
+                <VisuallyHiddenInput onChange={songCoverChange} type="file" accept=".png" />
             </Button>
 
             {
-                coverImg ? <InfoText text={`Image "${coverImg.name}" is selected.`} /> : <InfoText text="Please upload a .png or a .jpg file." /> 
+                coverImg ? <InfoText text={`Image "${coverImg.name}" is selected.`} /> : <InfoText text="Please upload a .png file." /> 
             }            
  
             <Button

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
 import { AuthProps, Song } from "../types"
-import { Box, Button, CircularProgress } from "@mui/material"
-import SongCard from "./SongCard"
+import { Button, CircularProgress, Typography } from "@mui/material"
 import { Link } from "react-router-dom"
 import axios from "axios"
 import { API_BASE } from "../constants"
+import { PlaylistSongList } from "../pages/ViewPlaylist"
 
 interface UserSongsProps extends AuthProps {
     username: string
@@ -25,18 +25,26 @@ const UserSongs = ({ username, setDanger }: UserSongsProps) => {
             })
     }, [])
 
+
+
     return (
         <>
-            {songs
-            ? songs.map(song => (
-                <Box key={song.id} component={Link} to={`/listen/${song.id}`} sx={{ color: 'text.primary', textDecoration: 'none' }}>
-                    <SongCard artist={song.artist.username} key={song.id} title={song.title} src='' isControllable={false} />
-                    <br />
-                </Box>
-            ))
-            : <CircularProgress />}
+            {songs ? <PlaylistSongList songs={songs} /> : <CircularProgress />}
+            {hasFailed && <FailDisplayer />}
 
-            {hasFailed && <Button component={Link} to='/' variant="outlined" sx={{ mt: 2 }} color="warning">Return to homepage</Button>}
+            
+        </>
+    )
+}
+
+const FailDisplayer = () => {
+    return (
+        <>
+            <Typography paragraph>
+                This user couldn't be found. You can return to homepage.
+            </Typography>
+
+            <Button component={Link} to='/' variant="outlined" sx={{ mt: 2 }} color="warning">Return to homepage</Button>
         </>
     )
 }

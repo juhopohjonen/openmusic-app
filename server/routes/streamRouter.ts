@@ -5,7 +5,7 @@ import getValues from "../env"
 
 const streamRouter = Router()
 
-streamRouter.get('/:id', async (req, res, next) => {
+streamRouter.get('/song/:id', async (req, res, next) => {
     const { id } = req.params
 
 
@@ -27,7 +27,30 @@ streamRouter.get('/:id', async (req, res, next) => {
         next(e)
     }
 
+})
 
+streamRouter.get('/song/:id/cover', async (req, res, next) => {
+    const { id } = req.params
+
+
+    try {
+        const song = await SongModel.findOne({ _id: id })
+
+        if (!song) {
+            return res.status(404).end()
+        }
+
+    
+        const { coverImageFile } = song
+
+        const filePath = path.join(getValues().UPLOADS_PATH, coverImageFile )
+    
+    
+     
+        return res.sendFile(filePath)
+    } catch (e) {
+        next(e)
+    }
 })
 
 export default streamRouter
