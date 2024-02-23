@@ -23,6 +23,9 @@ const SongCard = ({ title, artist, id, isControllable=true }: SongCardProps) => 
     const [isLoop, setLoop] = useState(false)
     const audioRef = useRef<HTMLAudioElement>(null)
 
+    const [fullImage, setFullImage] = useState(false)
+    const fullImageCheck = () => setFullImage(!fullImage)
+
     const changeLoop = () => setLoop(!isLoop)
 
 
@@ -70,9 +73,10 @@ const SongCard = ({ title, artist, id, isControllable=true }: SongCardProps) => 
 
             <CardMedia
                 component="img"
-                sx={{ width: 120 }}
+                sx={{ width: fullImage ? 200 : 120, transition: 'width 1s' }}
                 src={`${src}/cover`}
                 alt="Live from space album cover"
+                onClick={fullImageCheck}
             />
 
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>

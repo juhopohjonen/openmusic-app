@@ -1,9 +1,8 @@
-import { Button, Typography } from "@mui/material"
-import { AuthProps } from '../types'
+import { Typography } from "@mui/material"
 import Title from "../Components/Title"
 import RandomSongs from "../Components/RandomSongs"
 
-const Index = ({ auth, logout }: AuthProps) => {
+const Index = () => {
     return (
         <>
             <Title title="Home" />
@@ -15,14 +14,6 @@ const Index = ({ auth, logout }: AuthProps) => {
 
 
             <RandomSongs />
-
-            <br />
-
-            {
-                !auth ? (
-                    <></>
-                ) : <Button variant="outlined" color="error" onClick={() => logout()}>Logout</Button>
-            }
  
         </>
     )

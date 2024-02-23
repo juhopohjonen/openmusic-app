@@ -2,14 +2,14 @@ import { useEffect, useState } from "react"
 import { Song } from "../types"
 import axios from "axios"
 import { API_BASE } from "../constants"
-import { Box, Card, CardContent, CardMedia, Fade, Grid, Typography, Zoom } from "@mui/material"
+import { Box, Card, CardContent, CardMedia, Grid, Grow, Typography } from "@mui/material"
 import { Link } from "react-router-dom"
 
 const getRandomSongs = (songs: Song[]) => {
     return songs.sort(() => 0.5 - Math.random()).slice(0, 3)
 }
 
-const RandomSongs = () => {
+const RandomSongs = ({ showHeader=true}: { showHeader?: boolean }) => {
     const [songs, setSongs] = useState<Song[] | null>([])
 
     useEffect(() => {
@@ -25,38 +25,47 @@ const RandomSongs = () => {
         return <></>
     }
 
-    const getDelay = (index: number) => `${(250 * (index + 1)).toString()}ms`
 
     return (
-        <Fade in={songs.length > 0}>
+        <Grow in={songs.length > 0} timeout={1000}>
             <Box>
-                <Typography variant="h5" component='div' gutterBottom>
-                    Some of our song catalog.
-                </Typography>
-
+                {showHeader && (
+                    <Typography variant="h5" component='div' gutterBottom>
+                        Some of our song catalog.
+                    </Typography>
+                )}
                 <Box sx={{ mt: 2, mb: 1 }}>
-                    <Grid sx={{ display: 'flex' }} container spacing={2} >
+                    <Grid container spacing={2} >
 
-                        {songs && songs.map((song, i) => (
+                        {songs && songs.map((song) => (
                             <Grid component={Link} to={`/listen/${song.id}`} sx={{ textDecoration: 'none' }} item key={song.id} xs={4}>
-                                <Zoom in={true} style={{ transitionDelay: getDelay(i) }}>
-                                    <Box>
-                                        <SongHero song={song} />
-                                    </Box>
-                                </Zoom>
+                                <Box>
+                                    <SongHero song={song} />
+                                </Box>
                             </Grid>
                         ))}
 
                     </Grid>
                 </Box>
             </Box>
-        </Fade>
+        </Grow>
     )
 }
 
 const SongHero = ({ song }: { song: Song }) => (
 
-    <Card>
+    <Card
+        sx={
+            { '&:hover': {
+                border: 1,
+                borderColor: 'primary.main',
+                borderWidth: 1.5,
+            },
+            transition: 'border 0.3s linear',
+        }}
+
+
+    >
         <CardMedia
             image={`${API_BASE}/api/stream/song/${song.id}/cover`}
             sx={{ height: 100, width: '100%' }}

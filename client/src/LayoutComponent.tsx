@@ -1,4 +1,4 @@
-import { Alert, AppBar, Button, Collapse, Container, CssBaseline, IconButton, Menu, MenuItem, ThemeProvider, Toolbar, Typography, createTheme } from "@mui/material"
+import { Alert, AppBar, Box, Button, Collapse, Container, CssBaseline, Divider, IconButton, Menu, MenuItem, ThemeProvider, Toolbar, Typography, createTheme } from "@mui/material"
 import { Link, Outlet } from "react-router-dom"
 import { Helmet } from 'react-helmet'
 
@@ -107,7 +107,7 @@ const MenuItems = ({ setItems }: { setItems?: MenuItemValues[] }) => {
     )
 }
 
-const Navbar = ({ auth }: AuthProps) => {
+const Navbar = ({ auth, logout }: AuthProps) => {
 
     const [anchor, setAnchor] = useState<null | HTMLElement>(null)
     const [userAnchor, setUserAnchor] = useState<null | HTMLElement>(null)
@@ -216,6 +216,21 @@ const Navbar = ({ auth }: AuthProps) => {
                     onClose={closeMenu}
                 >
                     {auth ? <MenuItems setItems={loggedInMenu} /> : <MenuItems setItems={loggedOutMenu} /> }
+
+                    <Divider />
+
+                    <Box sx={{ paddingLeft: 1, paddingRight: 1, marginTop: 1 }}>
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            color="error"
+                            sx={{ width: '100%' }}
+                            onClick={() => logout()}
+                        >
+                            Logout
+                        </Button>
+                    </Box>
+
                 </Menu>
 
             </Toolbar>

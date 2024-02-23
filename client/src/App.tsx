@@ -47,7 +47,7 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Layout {...authProps} />}>
-          <Route index element={<Index {...authProps} />} />
+          <Route index element={<Index />} />
           <Route path='login' element={<Login {...authProps} />} />
           <Route path='signup' element={<Signup {...authProps} />} />
           <Route path='upload' element={<Upload {...authProps} />} />
