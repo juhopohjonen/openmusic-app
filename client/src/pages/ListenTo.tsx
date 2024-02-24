@@ -51,7 +51,7 @@ const ListenTo = (authProps: AuthProps) => {
                 song ? <SongInfo {...authProps} song={song} /> : <SongCardSkeleton />
             }
 
-            <CommentList songId={id} />
+            <CommentList {...authProps} songId={id} />
             
             </Paper>
 
@@ -136,7 +136,18 @@ const SongInfo = (songCardProps: SongCardProps) => {
     )
 }
 
-const CommentList = ({ songId }: { songId: string | undefined }) => {
+interface CommentListProps extends AuthProps  {
+    songId: string | undefined
+}
+
+const CommentList = (commentListProps: CommentListProps) => {
+    const { songId, auth } = commentListProps
+
+    if (!songId) {
+        return <></>
+    }
+
+
     const MAX_COMMENT_LENGTH = 75
 
     const navigate = useNavigate()
@@ -190,7 +201,19 @@ const CommentList = ({ songId }: { songId: string | undefined }) => {
         <Paper elevation={10} sx={{ p: 2, mt: 2 }}>
             <Typography variant='h5' component='div' gutterBottom>Comments</Typography>
 
-            {comments.map((c, i) => <CommentElem key={`${c.user.username}-key-${i}`} content={c.content} username={c.user.username} /> )}
+            {comments.map((c, i) => (
+                <CommentElem 
+                    {...commentListProps} 
+                    songId={songId} 
+                    auth={auth} 
+                    key={`${c.user.username}-key-${i}`} 
+                    commentId={c.id} 
+                    content={c.content} 
+                    username={c.user.username} 
+                    commentsStateChange={setComments}
+                    comments={comments}
+                />
+            ) )}
 
 
             <Grid sx={{ mt: 2 }} container component='form' onSubmit={sendComment}>

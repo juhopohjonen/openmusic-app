@@ -42,6 +42,7 @@ export interface CommentType {
     content: string,
     user: User,
     song: CommentSongInfo,
+    id: string
 }
 
 export interface AlertProps {

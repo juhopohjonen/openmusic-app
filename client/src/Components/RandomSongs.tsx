@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Song } from "../types"
 import axios from "axios"
 import { API_BASE } from "../constants"
-import { Box, Card, CardContent, CardMedia, Grid, Grow, Typography } from "@mui/material"
+import { Box, Card, CardContent, CardMedia, Grid, Grow, Skeleton, Typography } from "@mui/material"
 import { Link } from "react-router-dom"
 
 const getRandomSongs = (songs: Song[]) => {
@@ -52,31 +52,41 @@ const RandomSongs = ({ showHeader=true}: { showHeader?: boolean }) => {
     )
 }
 
-const SongHero = ({ song }: { song: Song }) => (
+const SongHero = ({ song }: { song: Song }) => {
 
-    <Card
-        sx={
-            { '&:hover': {
-                border: 1,
-                borderColor: 'primary.main',
-                borderWidth: 1.5,
-            },
-            transition: 'border 0.3s linear',
-        }}
+    const [isLoaded, setLoaded] = useState(false)
+
+    return (
+        <Card
+            sx={
+                { '&:hover': {
+                    border: 1,
+                    borderColor: 'primary.main',
+                    borderWidth: 1.5,
+                },
+                transition: 'border 0.3s linear',
+            }}
+        >
+            {!isLoaded && <Skeleton variant="rectangular" animation="wave" height={100} width='100%' />}
+            
+            <CardMedia
+                image={`${API_BASE}/api/stream/song/${song.id}/cover`}
+                sx={{ height: 100, width: '100%', display: isLoaded ? '' : 'none' }}
+                component='img'
+                onLoad={() => setLoaded(true)}
+            />
 
 
-    >
-        <CardMedia
-            image={`${API_BASE}/api/stream/song/${song.id}/cover`}
-            sx={{ height: 100, width: '100%' }}
-        />
 
-        <CardContent>
-            <Typography variant="h6" component='div'>
-                {song.title}
-            </Typography>
-        </CardContent>
-    </Card>
-)
+            <CardContent>
+                <Typography variant="h6" component='div'>
+                    {song.title}
+                </Typography>
+            </CardContent>
+        </Card>
+
+    )
+
+}
 
 export default RandomSongs

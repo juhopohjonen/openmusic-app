@@ -128,6 +128,33 @@ musicRouter.post('/:id/comment', requireAuth, async (req, res, next) => {
 
 })
 
+musicRouter.delete('/:id/comment/:commentId', requireAuth, async (req, res, next) => {
+    const { id, commentId } = req.params
+    if (!req.user) {
+        return res.status(401).end()
+    }
+    
+    try {
+        const comment = await CommentModel.findOne({ song: id, _id: commentId })
+            .populate<{ user: User }>('user')
+        
+        if (!comment) {
+            return res.status(404).end()
+        }
+
+        
+        if (!comment || comment.user.username !== req.user.username) {
+            return res.status(403).end()
+        }
+
+        await CommentModel.deleteOne({ _id: comment._id })
+        return res.status(204).end()
+    } catch (e) {
+        next(e)
+    }
+
+})
+
 musicRouter.get('/:id/comment', async (req, res) => {
     const { id } = req.params
     
