@@ -97,7 +97,7 @@ const Login = ({ setAuth, setDanger, setSuccess }: AuthProps) => {
                 </Typography>
 
 
-
+                <SignUpButton />
             </Box>
 
         </>
