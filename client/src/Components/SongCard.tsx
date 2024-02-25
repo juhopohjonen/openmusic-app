@@ -73,11 +73,12 @@ const SongCard = ({ title, artist, id, isControllable=true }: SongCardProps) => 
 
             <CardMedia
                 component="img"
-                sx={{ width: fullImage ? 200 : 120, transition: 'width 1s' }}
+                sx={{ width: fullImage ? 200 : 120, transition: '1s', height: 200 }}
                 src={`${src}/cover`}
                 alt="Live from space album cover"
                 onClick={fullImageCheck}
             />
+
 
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 
