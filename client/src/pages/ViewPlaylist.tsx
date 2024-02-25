@@ -1,6 +1,6 @@
-import { IconButton, List, ListItem, ListItemIcon, ListItemText, Typography } from "@mui/material"
+import { Box, IconButton, List, ListItem, ListItemIcon, ListItemText, Typography } from "@mui/material"
 import axios from "axios"
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { API_BASE } from "../constants"
 import { SetStateAction, useEffect, useRef, useState } from "react"
 import { AuthProps, Playlist, Song } from "../types"
@@ -135,6 +135,7 @@ const PlaylistSong = ({ song, songIdPlaying, setSongIdPlaying }: PlaylistSongPro
                     }
                 </IconButton>
             </ListItemIcon>
+
             <ListItemText
                 primaryTypographyProps={{
                     color: titleColor

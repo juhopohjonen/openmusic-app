@@ -14,6 +14,7 @@ import RateSong from '../Components/RateSong'
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Title from '../Components/Title'
+import ShareSongButton from '../Components/ShareButton'
 
 
 
@@ -126,11 +127,27 @@ const SongInfo = (songCardProps: SongCardProps) => {
             </Grid>
 
             <Grid item>
-                
-                {isUserArtist && <SongAuthorMenu {...songCardProps}  />}
 
-                
-                <AddtoPlaylist {...songCardProps} />
+                <Grid container>
+
+                    <Grid item>
+                        
+                        {isUserArtist && <SongAuthorMenu {...songCardProps}  />}
+
+                        
+                        <AddtoPlaylist {...songCardProps} />
+                    </Grid>
+
+                    
+
+                    <Grid item>
+                        <Box sx={{  }}>
+                            <ShareSongButton song={song} />
+                        </Box>
+                    </Grid>
+
+                </Grid>
+
             </Grid>
         </Grid>
     )
@@ -257,7 +274,7 @@ const AddtoPlaylist = (authProps: SongCardProps) => {
     if (!auth) {
         return (
             <Tooltip title="You have to be logged in to manage playlists" enterTouchDelay={50}>
-                <Icon sx={{ color: 'text.secondary' }}>
+                <Icon fontSize='large' sx={{ color: 'text.secondary', mt: -0.75 }}>
                     <PlaylistAddIcon />
                 </Icon>
             </Tooltip>
