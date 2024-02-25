@@ -15,6 +15,7 @@ import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Title from '../Components/Title'
 import ShareSongButton from '../Components/ShareButton'
+import LoginModal from '../Components/LoginModalContents'
 
 
 
@@ -159,6 +160,9 @@ interface CommentListProps extends AuthProps  {
 
 const CommentList = (commentListProps: CommentListProps) => {
     const { songId, auth } = commentListProps
+    
+    const [loginModalOpen, setModal] = useState(false)
+    const closeModal = () => setModal(false)
 
     if (!songId) {
         return <></>
@@ -166,8 +170,6 @@ const CommentList = (commentListProps: CommentListProps) => {
 
 
     const MAX_COMMENT_LENGTH = 75
-
-    const navigate = useNavigate()
 
     const COMMENT_API = `${API_BASE}/api/music/${songId}/comment`
 
@@ -195,11 +197,13 @@ const CommentList = (commentListProps: CommentListProps) => {
     const sendComment = (e: FormEvent<HTMLFormElement>) => {
         setNewComInput('')
 
-        if (!getAuth()) {
-            navigate('/login')
-        }
+
 
         e.preventDefault()
+
+        if (!getAuth()) {
+            return setModal(true)
+        }
 
         axios.post(COMMENT_API, {
             commentText: newComInput
@@ -256,6 +260,7 @@ const CommentList = (commentListProps: CommentListProps) => {
 
             </Grid>
 
+            {loginModalOpen && <LoginModal isOpen={loginModalOpen} setClose={closeModal} />}
 
         </Paper>
     )

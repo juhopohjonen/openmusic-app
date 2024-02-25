@@ -1,6 +1,6 @@
-import { Box, IconButton, List, ListItem, ListItemIcon, ListItemText, Typography } from "@mui/material"
+import { IconButton, List, ListItem, ListItemIcon, ListItemText, Typography } from "@mui/material"
 import axios from "axios"
-import { Link, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { API_BASE } from "../constants"
 import { SetStateAction, useEffect, useRef, useState } from "react"
 import { AuthProps, Playlist, Song } from "../types"

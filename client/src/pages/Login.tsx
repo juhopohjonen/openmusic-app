@@ -97,21 +97,24 @@ const Login = ({ setAuth, setDanger, setSuccess }: AuthProps) => {
                 </Typography>
 
 
-                <Button 
-                    startIcon={<PersonAddIcon />}
-                    variant="outlined"
-                    color="secondary"
-                    sx={{ mt: 1 }}
-                    component={Link}
-                    to='/signup'
-                >
-                    Sign up
-                </Button>
 
             </Box>
 
         </>
     )
 }
+
+export const SignUpButton = () => (
+    <Button 
+        startIcon={<PersonAddIcon />}
+        variant="outlined"
+        color="secondary"
+        sx={{ mt: 1 }}
+        component={Link}
+        to='/signup'
+    >
+        Sign up
+    </Button>
+)
 
 export default Login
