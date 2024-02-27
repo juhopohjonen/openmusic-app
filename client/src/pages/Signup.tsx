@@ -112,7 +112,7 @@ const Signup = ({ setAuth, setDanger, setSuccess }: AuthProps) => {
                     placeholder="Your new username"
                     type="name"
                     value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    onChange={(e) => setUsername(e.target.value.toLowerCase())}
                     sx={{ mb: 2 }}
                     error={Boolean(incorrectUsername)}
                     helperText={

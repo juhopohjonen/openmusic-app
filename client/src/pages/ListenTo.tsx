@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { API_BASE } from '../constants'
 import SongCard from '../Components/SongCard'
 import { FormEvent, useEffect, useState } from 'react'
@@ -319,6 +319,21 @@ const AddtoPlaylist = (authProps: SongCardProps) => {
                 <Divider />
 
                 {playlists && playlists.map(playlist => <PlaylistItem key={playlist.id} playlist={playlist} authProps={authProps} />)}
+
+                <Divider />
+
+
+
+                <Button
+                    color='secondary'
+                    sx={{ ml: 1 }}
+                    component={Link}
+                    to='/playlists/my?creator=open'
+                >
+                    Create new
+                </Button>
+
+
             </Menu>
         </>
     )

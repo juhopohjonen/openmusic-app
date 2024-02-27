@@ -3,6 +3,7 @@ import { AutocompleteOption, Song, SongSearchProps } from "../types";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_BASE } from "../constants";
+import { songsToAutocompleteOptions } from "../utils";
 
 
 
@@ -24,6 +25,17 @@ const SongSearch = ({ width=300, song, setSong, label='test' }: SongSearchProps)
                 .catch(err => {
                     console.error(err)
                 })
+        } else {
+            axios.get<Song[]>(`${API_BASE}/api/music`)  
+                .then(res => {
+                    const songs = res.data
+                    setResults(songsToAutocompleteOptions(songs))
+                })
+                .catch(err => {
+                    console.error(err)
+                    return null
+                })
+        
         }
     }, [query])
 

@@ -1,5 +1,5 @@
 import { jwtDecode } from "jwt-decode";
-import { AuthState } from "./types";
+import { AuthState, AutocompleteOption, Song } from "./types";
 
 const isAuthObject = (auth: unknown): auth is AuthState => {
     if (auth && typeof auth === 'object' && "token" in auth && "expiresIn" in auth && "username" in auth && typeof auth.token === 'string' && typeof auth.expiresIn === 'string' && typeof auth.username === 'string') {
@@ -70,10 +70,24 @@ const isTokenValid = (token: string | undefined): boolean => {
 
 const getFullTitle = (title: string) => `${title} - OpenMusic`
 
+const songsToAutocompleteOptions = (songs: Song[]) : AutocompleteOption[] => {
+    const options = songs.map(opt => {
+        return {
+            label: opt.title,
+            id: opt.id
+        }
+    })
+
+    console.log('options')
+
+    return options
+}
+
 export {
     getAuth,
     logoutUser,
     setStateWithTimeout,
     isTokenValid,
-    getFullTitle
+    getFullTitle,
+    songsToAutocompleteOptions
 }

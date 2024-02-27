@@ -1,6 +1,6 @@
 import { Box, Button, Card, CardContent, Dialog, DialogTitle, Grid, IconButton, TextField, Typography } from "@mui/material"
 import { AuthProps, Playlist, AutocompleteOption } from "../types"
-import { Link, Navigate } from "react-router-dom"
+import { Link, Navigate, useSearchParams } from "react-router-dom"
 import { SyntheticEvent, useEffect, useState } from "react"
 import axios from "axios"
 import { API_BASE } from "../constants"
@@ -11,14 +11,23 @@ import Title from "../Components/Title"
 const MyPlaylists = (authProps: AuthProps) => {
     const { auth, setDanger } = authProps
 
+    const [params, setParams] = useSearchParams()
+
     if (!auth) {
         return <Navigate to='/' />
     }
 
     const [playlists, setPlaylists] = useState<Playlist[] | null>(null)
-    const [createDialog, setCreate] = useState(false)
+    // const [createDialog, setCreate] = useState(false)
 
-    const closeCreator = () => setCreate(false)
+    const isCreateOpen = params.get('creator') === 'open'
+
+    const openCreator = () => setParams(new URLSearchParams({...params, creator: 'open'}))
+    const closeCreator = () => {
+        console.log('trying to close', new URLSearchParams({...params, creator: 'closed' }))
+        setParams(new URLSearchParams({...params, creator: 'closed' }))
+    }
+
     const addToPlaylist = (newPlaylist: Playlist) => {
         if (!playlists || playlists.length === 0) {
             return setPlaylists([newPlaylist])
@@ -54,17 +63,17 @@ const MyPlaylists = (authProps: AuthProps) => {
             }
 
 
-            <Button onClick={() => setCreate(true)} sx={{ mt: 2 }} variant="outlined">Create new</Button>
+            <Button onClick={() => openCreator()} sx={{ mt: 2 }} variant="outlined">Create new</Button>
 
-            <Dialog onClose={() => setCreate(false)} open={createDialog}>
+            <Dialog onClose={closeCreator} open={isCreateOpen}>
                 <DialogTitle>
                     Create a new playlist
                 </DialogTitle>
 
 
-                <Box sx={{ paddingLeft: 2, paddingRight: 2, paddingBottom: 2 }}>
+                <Box sx={{ padding: 3 }}>
                 
-                <PlaylistCreator {...authProps} closeCreator={closeCreator} addToPlaylist={addToPlaylist} />
+                    <PlaylistCreator {...authProps} closeCreator={closeCreator} addToPlaylist={addToPlaylist} />
 
                 </Box>
 
@@ -83,12 +92,12 @@ interface PlaylistCreatorProps extends AuthProps {
 const PlaylistCreator = ({ auth, setDanger, closeCreator, addToPlaylist }: PlaylistCreatorProps) => {
     const [song, setSong] = useState<AutocompleteOption | null>(null)
     const [selectedSongs, setSelectedSongs] = useState<AutocompleteOption[]>([])
-
     console.log(selectedSongs)
 
     if (!auth) {
         return <></>
     }
+
 
     const isValidSong = (): boolean => song ? true : false
 
