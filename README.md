@@ -25,7 +25,7 @@ To get started with OpenMusic, follow these steps:
 git clone https://github.com/juhopohjonen/openmusic-app
 
 # Navigate to the projects server directory
-cd cd openmusic-app/server
+cd openmusic-app/server
 
 # Install dependencies
 npm install

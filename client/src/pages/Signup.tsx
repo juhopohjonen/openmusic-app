@@ -1,11 +1,13 @@
 import { Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, TextField, Typography } from "@mui/material";
 import { AuthProps } from "../types";
 import axios, { AxiosError } from "axios";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { getAuth } from "../utils";
 import { API_BASE } from "../constants";
 import Title from "../Components/Title";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
+import Captcha from "../Components/Captcha";
 
 const Signup = ({ setAuth, setDanger, setSuccess }: AuthProps) => {
 
@@ -15,6 +17,10 @@ const Signup = ({ setAuth, setDanger, setSuccess }: AuthProps) => {
 
     const [passwordRepeat, setPasswordRepeat] = useState('')
     const [acceptBoxChecked, setBoxChecked] = useState(false) 
+
+    const [captchaToken, setCaptchaToken] = useState('')
+    const captchaRef = useRef<HCaptcha | null>(null)
+    const captchaChecked = Boolean(captchaToken)
 
     const [incorrectUsername, setIncorrectUsername] = useState<string | false>(false) 
 
@@ -57,7 +63,7 @@ const Signup = ({ setAuth, setDanger, setSuccess }: AuthProps) => {
     const passwordsMatch = (): boolean => password === passwordRepeat
 
     const isFormValid = (): boolean => {
-        if (!username || !password || !acceptBoxChecked || incorrectUsername || !passwordsMatch()) {
+        if (!username || !password || !acceptBoxChecked || incorrectUsername || !passwordsMatch() || !captchaChecked) {
             return false
         }
 
@@ -76,6 +82,10 @@ const Signup = ({ setAuth, setDanger, setSuccess }: AuthProps) => {
         axios.post(`${API_BASE}/api/user`, {
             username,
             password
+        }, {
+            headers: {
+                "HCAPTCHA_TOKEN": captchaToken
+            }
         })
             .then(res => {
                 const { creds } = res.data
@@ -91,6 +101,7 @@ const Signup = ({ setAuth, setDanger, setSuccess }: AuthProps) => {
                     return setDanger('User with given username already exists.')
                 }
 
+                captchaRef?.current?.resetCaptcha()
                 return setDanger("Couldn't create user account. Please try again in a few hours.")
 
             })
@@ -119,7 +130,6 @@ const Signup = ({ setAuth, setDanger, setSuccess }: AuthProps) => {
                         incorrectUsername 
                             ? incorrectUsername
                             : "Only characters a-z allowed"
-
                     }
                 />
 
@@ -147,6 +157,12 @@ const Signup = ({ setAuth, setDanger, setSuccess }: AuthProps) => {
                 />
 
                 <br />
+
+                <Captcha
+                    setToken={setCaptchaToken}
+                    captchaRef={captchaRef}
+                />
+
 
                 <FormGroup sx={{ mb: 2 }}>
                     <FormControlLabel

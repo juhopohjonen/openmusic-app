@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { requireAuth } from "../middlewares"
+import { requireAuth, requireCaptcha } from "../middlewares"
 import SongModel from "../models/Song"
 import { User, Song } from "../types"
 import CommentModel from "../models/Comment";
@@ -30,7 +30,7 @@ musicRouter.get('/:id', async (req, res, next) => {
     }
 })
 
-musicRouter.post('/', requireAuth, upload.fields([{ name: 'song', maxCount: 1 }, { name: 'coverImg', maxCount: 1 }]), async (req, res) => {
+musicRouter.post('/', requireCaptcha, requireAuth, upload.fields([{ name: 'song', maxCount: 1 }, { name: 'coverImg', maxCount: 1 }]), async (req, res) => {
     if (!req.user || !req.files || !req.body.title) {
         console.log('fields', req.user, req.files, req.body.title, typeof req.files)
         return res.status(400).end()

@@ -7,8 +7,9 @@ import bcrypt from 'bcrypt'
 import SongModel from "../models/Song";
 import { doesAccountExist } from "../utils/accountHandler";
 import { User } from "../types";
+import { requireCaptcha } from "../middlewares";
 
-userRouter.post('/', async (req, res) => {
+userRouter.post('/', requireCaptcha, async (req, res) => {
     try {
         const { username, password } = parseSignupData(req.body)
         const accountExists: boolean = await doesAccountExist(username)

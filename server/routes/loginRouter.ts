@@ -3,10 +3,11 @@ import { generateUserCreds, parseSignupData } from "../utils/creds";
 import UserModel from "../models/User";
 
 import bcrypt from 'bcrypt'
+import { requireCaptcha } from "../middlewares";
 
 const loginRouter = Router()
 
-loginRouter.post('/', async (req, res) => {
+loginRouter.post('/', requireCaptcha, async (req, res) => {
     try {
         const { username, password } = parseSignupData(req.body)
         const user = await UserModel.findOne({ username: username })
