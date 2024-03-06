@@ -1,14 +1,16 @@
-import { Button, TextField, Typography, styled } from "@mui/material"
+import { Box, Button, TextField, Typography, styled } from "@mui/material"
 import RequireAuth from "../Components/RequireAuth.tsx"
 import { getAuth } from "../utils.ts"
 
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useRef, useState } from "react";
 import axios from "axios";
 import { API_BASE } from "../constants.ts";
 import { AuthProps } from "../types.ts";
 import { Navigate, useNavigate } from "react-router-dom";
 import Title from "../Components/Title.tsx";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
+import Captcha from "../Components/Captcha.tsx";
 
 
 const Upload = ({ auth, setSuccess, setDanger }: AuthProps) => {
@@ -23,7 +25,7 @@ const Upload = ({ auth, setSuccess, setDanger }: AuthProps) => {
         )
     }
 
-    const sendUploadRequest = (song: File, songTitle: File, coverImg: File) => {
+    const sendUploadRequest = (song: File, songTitle: File, coverImg: File, captchaToken: string, resetCaptcha: Function) => {
         const formData = new FormData()
         formData.append("song", song)
         formData.append("title", songTitle)
@@ -35,7 +37,8 @@ const Upload = ({ auth, setSuccess, setDanger }: AuthProps) => {
         axios.post(`${API_BASE}/api/music`, formData, {
             headers: {
                 'Authorization': `Bearer ${auth.token}`,
-                "Content-Type": 'multipart/form-data'
+                "Content-Type": 'multipart/form-data',
+                "HCAPTCHA_TOKEN": captchaToken
             }
         })
 
@@ -47,6 +50,7 @@ const Upload = ({ auth, setSuccess, setDanger }: AuthProps) => {
 
             .catch(err => {
                 console.error(err)
+                resetCaptcha()
                 return setDanger('Something happened in publishing song.')
             })
     }
@@ -70,6 +74,10 @@ const UploadMusicForm = ({ sendReqFunc }: { sendReqFunc: Function }) => {
     const [songName, setSongName] = useState('')
     const [songInput, setSongInput] = useState<File | null>(null)
     const [coverImg, setCoverImg] = useState<File | null>(null)
+
+    const [captchaToken, setCaptchaToken] = useState('')
+    const captchaChecked = Boolean(captchaToken)
+    const captchaRef = useRef<HCaptcha | null>(null)
 
     // see https://mui.com/material-ui/react-button/#file-upload
 
@@ -98,12 +106,14 @@ const UploadMusicForm = ({ sendReqFunc }: { sendReqFunc: Function }) => {
     }
 
     const isFormValid = (): boolean => {
-        if (!songInput || !songName || !coverImg) {
+        if (!songInput || !songName || !coverImg || !captchaChecked) {
             return false
         }
 
         return true
     }
+
+    const resetCaptcha = () => captchaRef?.current?.resetCaptcha()
 
     const submitForm = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -112,7 +122,7 @@ const UploadMusicForm = ({ sendReqFunc }: { sendReqFunc: Function }) => {
             return
         }
 
-        sendReqFunc(songInput, songName, coverImg)
+        sendReqFunc(songInput, songName, coverImg, captchaToken, resetCaptcha)
     }
 
     return (
@@ -146,6 +156,13 @@ const UploadMusicForm = ({ sendReqFunc }: { sendReqFunc: Function }) => {
             {
                 coverImg ? <InfoText text={`Image "${coverImg.name}" is selected.`} /> : <InfoText text="Please upload a .png file." /> 
             }            
+
+            <Box sx={{ mt: 2 }}>
+                <Captcha
+                    setToken={setCaptchaToken}
+                    captchaRef={captchaRef}
+                />
+            </Box>
  
             <Button
                 disabled={!isFormValid()}
